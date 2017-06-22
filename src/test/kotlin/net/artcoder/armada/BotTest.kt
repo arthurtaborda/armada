@@ -105,31 +105,29 @@ class BotTest {
     }
 
     /*
-    when attack hits and next attack on right hits
-    next attack should be right to second attack until sinks
+    when attack hits and next attack right hits
+    next attack should be right to second attack
      */
     @Test
-    fun testContinueRightAttackUntilSinks() {
+    fun testContinueRightAttack() {
         val bot = bot()
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
         val attack2 = bot.nextPoint()
         bot.reportAttack(attack2, HIT)
-        val attack3 = bot.nextPoint()
-        bot.reportAttack(attack3, SUNK)
 
         val nextAttack = bot.nextPoint()
-        assertRandomPoint(nextAttack)
-        assertThat(nextAttack).isNotEqualTo(attack3.right())
+        assertNotRandomPoint(nextAttack)
+        assertThat(nextAttack).isEqualTo(attack2.right())
     }
 
     /*
-    when attack hits and next attack on right hits and next attack on right misses
-    next attack should be left to the first attack until sinks
+    when attack hits and next attack right hits and next attack on right misses
+    next attack should be left to the first attack
      */
     @Test
-    fun testGoToLeftAfterMisses() {
+    fun testGoLeftAfterMiss() {
         val bot = bot()
 
         val attack1 = bot.nextPoint()
@@ -145,11 +143,11 @@ class BotTest {
     }
 
     /*
-    when attack hits and next attack on right hits and next attack on right misses
-    next attack should be left to the first attack until sinks
+    when attack hits and next attack right hits and next cell is already attacked
+    next attack should be left to the first attack
      */
     @Test
-    fun testGoToLeftIfNextCellIsHit() {
+    fun testGoLeftIfNextCellIsAttacked() {
         val bot = bot()
 
         val attack1 = bot.nextPoint()
@@ -164,44 +162,135 @@ class BotTest {
     }
 
     /*
-    when attack hits and next attack on down hits
-    next attack should be down to second attack until sinks
+    when attack hits and next attack right hits and next cell is out of board
+    next attack should be left to the first attack
      */
+    @Test
+    fun testGoLeftIfNextCellIsOutOfBoard() {
+        val bot = bot(listOf(RandomPoint(8, 9)))
+
+        val attack1 = bot.nextPoint()
+        bot.reportAttack(attack1, HIT)
+        val attack2 = bot.nextPoint()
+        bot.reportAttack(attack2, HIT)
+
+        val nextAttack = bot.nextPoint()
+        assertNotRandomPoint(nextAttack)
+        assertThat(nextAttack).isEqualTo(attack1.left())
+    }
 
     /*
-    when attack hits and next attack on down hits and next attack on down misses
-    next attack should be up to the first attack until sinks
+    when attack hits and next attack down hits
+    next attack should be down to second attack
      */
+    @Test
+    fun testContinueDownAttack() {
+        val bot = bot()
+
+        val attack1 = bot.nextPoint()
+        bot.reportAttack(attack1.right(), MISS)
+        bot.reportAttack(attack1, HIT)
+        val attack2 = bot.nextPoint()
+        bot.reportAttack(attack2, HIT)
+
+        val nextAttack = bot.nextPoint()
+        assertNotRandomPoint(nextAttack)
+        assertThat(nextAttack).isEqualTo(attack2.down())
+    }
 
     /*
-    when attack hits and next attack on left hits
-    next attack should be left to second attack until sinks
+    when attack hits and next attack down hits and next attack down misses
+    next attack should be up to the first attack
      */
+    @Test
+    fun testGoUpAfterMiss() {
+        val bot = bot()
+
+        val attack1 = bot.nextPoint()
+        bot.reportAttack(attack1.right(), MISS)
+        bot.reportAttack(attack1, HIT)
+        val attack2 = bot.nextPoint()
+        bot.reportAttack(attack2, HIT)
+        val attack3 = bot.nextPoint()
+        bot.reportAttack(attack3, MISS)
+
+        val nextAttack = bot.nextPoint()
+        assertNotRandomPoint(nextAttack)
+        assertThat(nextAttack).isEqualTo(attack1.up())
+    }
 
     /*
-    when attack hits and next attack on left hits and next attack on left misses
-    next attack should be right to the first attack until sinks
+    when attack hits and next attack down hits and next cell is already attacked
+    next attack should be up to the first attack
      */
+    @Test
+    fun testGoUpIfNextCellIsAttacked() {
+        val bot = bot()
+
+        val attack1 = bot.nextPoint()
+        bot.reportAttack(attack1.right(), MISS)
+        bot.reportAttack(attack1, HIT)
+        val attack2 = bot.nextPoint()
+        bot.reportAttack(attack2.down(), MISS) //make the right cell hit already
+        bot.reportAttack(attack2, HIT)
+
+        val nextAttack = bot.nextPoint()
+        assertNotRandomPoint(nextAttack)
+        assertThat(nextAttack).isEqualTo(attack1.up())
+    }
 
     /*
-    when attack hits and next attack on up hits
-    next attack should be up to second attack until sinks
+    when attack hits and next attack down hits and next cell is out of board
+    next attack should be left to the first attack
      */
+    @Test
+    fun testGoUpIfNextCellIsOutOfBoard() {
+        val bot = bot(listOf(RandomPoint(8, 8)))
+
+        val attack1 = bot.nextPoint()
+        bot.reportAttack(attack1.right(), MISS)
+        bot.reportAttack(attack1, HIT)
+        val attack2 = bot.nextPoint()
+        bot.reportAttack(attack2, HIT)
+
+        val nextAttack = bot.nextPoint()
+        assertNotRandomPoint(nextAttack)
+        assertThat(nextAttack).isEqualTo(attack1.up())
+    }
 
     /*
-    when attack hits and next attack on up hits and next attack on up misses
-    next attack should be down to the first attack until sinks
+    when attack hits and next attack left hits
+    next attack should be left to second attack
      */
+    @Test
+    fun testContinueLeftAttack() {
+        val bot = bot()
+
+        val attack1 = bot.nextPoint()
+        bot.reportAttack(attack1.right(), MISS)
+        bot.reportAttack(attack1.down(), MISS)
+        bot.reportAttack(attack1, HIT)
+        val attack2 = bot.nextPoint()
+        bot.reportAttack(attack2, HIT)
+
+        val nextAttack = bot.nextPoint()
+        assertNotRandomPoint(nextAttack)
+        assertThat(nextAttack).isEqualTo(attack2.left())
+    }
 
     private fun bot() = Bot(10, PointGeneratorStub(
-            mutableListOf(
-                    RandomPoint(1, 2),
+            listOf(
                     RandomPoint(3, 4),
+                    RandomPoint(1, 2),
                     RandomPoint(5, 6),
                     RandomPoint(7, 8)
             )))
 
-    class PointGeneratorStub(val points: MutableList<RandomPoint>) : PointGenerator {
+    private fun bot(points: List<RandomPoint>) = Bot(10, PointGeneratorStub(points))
+
+    class PointGeneratorStub(points: List<RandomPoint>) : PointGenerator {
+
+        val points = points.toMutableList()
 
         override fun randomPoint(): Point {
             return points.removeAt(0)

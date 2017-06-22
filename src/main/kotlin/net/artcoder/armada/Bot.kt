@@ -55,36 +55,24 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
 
     private fun changeDestructionDirection(attackPoint: Point) {
         when (destructionDirection) {
-            UP -> TODO()
-            RIGHT -> {
-                nextPointToAttack = flipDestroyingDirectionLeft(attackPoint)
-            }
-            LEFT -> TODO()
-            DOWN -> TODO()
-            null -> TODO()
+            UP -> nextPointToAttack = flipDestroyingDirectionDown(attackPoint)
+            RIGHT -> nextPointToAttack = flipDestroyingDirectionLeft(attackPoint)
+            LEFT -> nextPointToAttack = flipDestroyingDirectionRight(attackPoint)
+            else -> nextPointToAttack = flipDestroyingDirectionUp(attackPoint)
         }
-    }
-
-    private fun flipDestroyingDirectionLeft(attackPoint: Point): Point {
-        destructionDirection = LEFT
-        var pointToAttack = attackPoint.left()
-        while (hasBeenAttacked(pointToAttack)) {
-            pointToAttack = pointToAttack.left()
-        }
-        return pointToAttack
     }
 
     private fun getNextPossibleTargetPoint(attackPoint: Point): Point {
         var point = attackPoint.right()
         destructionDirection = RIGHT
 
-        if (hasBeenAttacked(attackPoint.right())) {
+        if (!isAvailableForAttack(attackPoint.right())) {
             destructionDirection = DOWN
             point = attackPoint.down()
-            if (hasBeenAttacked(attackPoint.down())) {
+            if (!isAvailableForAttack(attackPoint.down())) {
                 destructionDirection = LEFT
                 point = attackPoint.left()
-                if (hasBeenAttacked(attackPoint.left())) {
+                if (!isAvailableForAttack(attackPoint.left())) {
                     destructionDirection = UP
                     point = attackPoint.up()
                 }
@@ -97,28 +85,28 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
     private fun getNextPossibleDestructionPoint(attackPoint: Point): Point {
         when (destructionDirection) {
             UP -> {
-                if (!hasBeenAttacked(attackPoint.up())) {
+                if (isAvailableForAttack(attackPoint.up())) {
                     return attackPoint.up()
                 } else {
                     return flipDestroyingDirectionDown(attackPoint)
                 }
             }
             RIGHT -> {
-                if (!hasBeenAttacked(attackPoint.right())) {
+                if (isAvailableForAttack(attackPoint.right())) {
                     return attackPoint.right()
                 } else {
                     return flipDestroyingDirectionLeft(attackPoint)
                 }
             }
             LEFT -> {
-                if (!hasBeenAttacked(attackPoint.left())) {
+                if (isAvailableForAttack(attackPoint.left())) {
                     return attackPoint.left()
                 } else {
                     return flipDestroyingDirectionRight(attackPoint)
                 }
             }
             else -> {
-                if (!hasBeenAttacked(attackPoint.down())) {
+                if (isAvailableForAttack(attackPoint.down())) {
                     return attackPoint.down()
                 } else {
                     return flipDestroyingDirectionUp(attackPoint)
@@ -127,15 +115,19 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
         }
     }
 
-    private fun hasBeenAttacked(point: Point): Boolean {
-        return table[point.x][point.y] != CellState.NOT_ATTACKED
+    private fun isAvailableForAttack(point: Point): Boolean {
+        try {
+            return table[point.x][point.y] == CellState.NOT_ATTACKED
+        } catch(e: ArrayIndexOutOfBoundsException) {
+            return false
+        }
     }
 
-    private fun flipDestroyingDirectionDown(attackPoint: Point): Point {
-        destructionDirection = DOWN
-        var pointToAttack = attackPoint.down()
-        while (hasBeenAttacked(pointToAttack)) {
-            pointToAttack = pointToAttack.down()
+    private fun flipDestroyingDirectionUp(attackPoint: Point): Point {
+        destructionDirection = UP
+        var pointToAttack = attackPoint.up()
+        while (!isAvailableForAttack(pointToAttack)) {
+            pointToAttack = pointToAttack.up()
         }
         return pointToAttack
     }
@@ -143,17 +135,26 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
     private fun flipDestroyingDirectionRight(attackPoint: Point): Point {
         destructionDirection = RIGHT
         var pointToAttack = attackPoint.right()
-        while (hasBeenAttacked(pointToAttack)) {
+        while (!isAvailableForAttack(pointToAttack)) {
             pointToAttack = pointToAttack.right()
         }
         return pointToAttack
     }
 
-    private fun flipDestroyingDirectionUp(attackPoint: Point): Point {
-        destructionDirection = UP
-        var pointToAttack = attackPoint.up()
-        while (hasBeenAttacked(pointToAttack)) {
-            pointToAttack = pointToAttack.up()
+    private fun flipDestroyingDirectionLeft(attackPoint: Point): Point {
+        destructionDirection = LEFT
+        var pointToAttack = attackPoint.left()
+        while (!isAvailableForAttack(pointToAttack)) {
+            pointToAttack = pointToAttack.left()
+        }
+        return pointToAttack
+    }
+
+    private fun flipDestroyingDirectionDown(attackPoint: Point): Point {
+        destructionDirection = DOWN
+        var pointToAttack = attackPoint.down()
+        while (!isAvailableForAttack(pointToAttack)) {
+            pointToAttack = pointToAttack.down()
         }
         return pointToAttack
     }
