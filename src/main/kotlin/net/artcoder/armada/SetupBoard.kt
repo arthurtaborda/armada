@@ -2,8 +2,8 @@ package net.artcoder.armada
 
 import java.util.*
 
-class SetupBoard(private val size: Int,
-                 availableShips: List<Ship>) {
+
+class SetupBoard(private val size: Int, availableShips: List<Ship>) {
 
     private val table = Array(size) { Array(size) { false } } //matrix of (size x size) with all false elements
     private val placedShips = mutableMapOf<UUID, PlacedShip>()
@@ -38,13 +38,13 @@ class SetupBoard(private val size: Int,
     }
 
     private fun checkPlacementAvailability(ship: Ship, direction: Direction) {
-        for ((x, y) in direction.points(ship.size)) {
+        for (point in direction.points(ship.size)) {
             try {
-                if (table[x][y]) {
-                    throw ShipOverlapException(Point(x, y))
+                if (table[point.x][point.y]) {
+                    throw ShipOverlapException(Cell(point.x, point.y))
                 }
             } catch(e: ArrayIndexOutOfBoundsException) {
-                throw PlacementOutOfBoundsException(Point(x, y))
+                throw PlacementOutOfBoundsException(Cell(point.x, point.y))
             }
         }
     }

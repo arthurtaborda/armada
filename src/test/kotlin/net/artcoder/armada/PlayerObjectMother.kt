@@ -18,25 +18,25 @@ object PlayerObjectMother {
         return player
     }
 
-    fun playerOnePoints(): MutableList<Point> {
-        return mutableListOf(Point(0, 0),
-                             Point(1, 0),
-                             Point(2, 0),
-                             Point(3, 0),
-                             Point(4, 0),
-                             Point(5, 0),
-                             Point(6, 0),
-                             Point(2, 1),
-                             Point(3, 1),
-                             Point(4, 1),
-                             Point(5, 1),
-                             Point(6, 1),
-                             Point(4, 2),
-                             Point(5, 2),
-                             Point(6, 2),
-                             Point(5, 3),
-                             Point(6, 3),
-                             Point(6, 4))
+    fun playerOnePoints(): MutableList<Cell> {
+        return mutableListOf(Cell(0, 0),
+                             Cell(1, 0),
+                             Cell(2, 0),
+                             Cell(3, 0),
+                             Cell(4, 0),
+                             Cell(5, 0),
+                             Cell(6, 0),
+                             Cell(2, 1),
+                             Cell(3, 1),
+                             Cell(4, 1),
+                             Cell(5, 1),
+                             Cell(6, 1),
+                             Cell(4, 2),
+                             Cell(5, 2),
+                             Cell(6, 2),
+                             Cell(5, 3),
+                             Cell(6, 3),
+                             Cell(6, 4))
     }
 
     fun playerTwo(): Player {
@@ -52,24 +52,24 @@ object PlayerObjectMother {
         return player
     }
 
-    fun playerTwoPoints(): MutableList<Point> {
-        return mutableListOf(Point(0, 9),
-                             Point(1, 9),
-                             Point(2, 9),
-                             Point(3, 9),
-                             Point(4, 9),
-                             Point(5, 9),
-                             Point(6, 9),
-                             Point(2, 8),
-                             Point(3, 8),
-                             Point(4, 8),
-                             Point(5, 8),
-                             Point(6, 8),
-                             Point(4, 7),
-                             Point(5, 7),
-                             Point(6, 7),
-                             Point(5, 6),
-                             Point(6, 6),
-                             Point(6, 5))
+    fun playerTwoPoints(): MutableList<Cell> {
+        return mutableListOf(Cell(0, 9),
+                             Cell(1, 9),
+                             Cell(2, 9),
+                             Cell(3, 9),
+                             Cell(4, 9),
+                             Cell(5, 9),
+                             Cell(6, 9),
+                             Cell(2, 8),
+                             Cell(3, 8),
+                             Cell(4, 8),
+                             Cell(5, 8),
+                             Cell(6, 8),
+                             Cell(4, 7),
+                             Cell(5, 7),
+                             Cell(6, 7),
+                             Cell(5, 6),
+                             Cell(6, 6),
+                             Cell(6, 5))
     }
 }

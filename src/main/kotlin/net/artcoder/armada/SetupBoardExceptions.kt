@@ -1,6 +1,6 @@
 package net.artcoder.armada
 
-class PlacementOutOfBoundsException(point: Point): RuntimeException("Placement is out of bounds in (${point.x},${point.y})")
+class PlacementOutOfBoundsException(point: Cell): RuntimeException("Placement is out of bounds in (${point.x},${point.y})")
 
 class ShipOverlapException(point: Point) : RuntimeException("A ship exists in (${point.x},${point.y})")
 

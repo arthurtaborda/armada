@@ -1,6 +1,7 @@
 package net.artcoder.armada
 
-import net.artcoder.armada.Player.State.*
+import net.artcoder.armada.Player.State.CREATING_BOARD
+import net.artcoder.armada.Player.State.READY_TO_START
 import net.artcoder.armada.ships.*
 import java.util.*
 

@@ -92,7 +92,7 @@ class SetupBoardTest {
         val ship = Submarine()
         add(ship, Horizontal(3, 3))
 
-        assertPoints(Submarine().name, listOf(Point(3, 3)))
+        assertPoints(Submarine().name, listOf(Cell(3, 3)))
     }
 
     /*
@@ -104,8 +104,8 @@ class SetupBoardTest {
         add(Submarine(), Horizontal(3, 3))
         add(Submarine(), Vertical(7, 7))
 
-        assertPoints(Submarine().name, listOf(Point(3, 3),
-                                                Point(7, 7)))
+        assertPoints(Submarine().name, listOf(Cell(3, 3),
+                                                Cell(7, 7)))
     }
 
     /*
@@ -116,8 +116,8 @@ class SetupBoardTest {
     fun testAddOneDestroyer() {
         add(Destroyer(), Horizontal(2, 2))
 
-        assertPoints(Destroyer().name, listOf(Point(2, 2),
-                                                Point(3, 2)))
+        assertPoints(Destroyer().name, listOf(Cell(2, 2),
+                                                Cell(3, 2)))
     }
 
     /*
@@ -129,10 +129,10 @@ class SetupBoardTest {
         add(Destroyer(), Horizontal(2, 2))
         add(Destroyer(), Vertical(6, 6))
 
-        assertPoints(Destroyer().name, listOf(Point(2, 2),
-                                                Point(3, 2),
-                                                Point(6, 6),
-                                                Point(6, 7)))
+        assertPoints(Destroyer().name, listOf(Cell(2, 2),
+                                                Cell(3, 2),
+                                                Cell(6, 6),
+                                                Cell(6, 7)))
     }
 
     /*
@@ -143,9 +143,9 @@ class SetupBoardTest {
     fun testAddOneCruiser() {
         add(Cruiser(), Vertical(4, 4))
 
-        assertPoints(Cruiser().name, listOf(Point(4, 4),
-                                              Point(4, 5),
-                                              Point(4, 6)))
+        assertPoints(Cruiser().name, listOf(Cell(4, 4),
+                                              Cell(4, 5),
+                                              Cell(4, 6)))
     }
 
     /*
@@ -156,10 +156,10 @@ class SetupBoardTest {
     fun testAddOneBattleship() {
         add(Battleship(), Vertical(5, 5))
 
-        assertPoints(Battleship().name, listOf(Point(5, 5),
-                                                 Point(5, 6),
-                                                 Point(5, 7),
-                                                 Point(5, 8)))
+        assertPoints(Battleship().name, listOf(Cell(5, 5),
+                                                 Cell(5, 6),
+                                                 Cell(5, 7),
+                                                 Cell(5, 8)))
     }
 
     /*
@@ -170,11 +170,11 @@ class SetupBoardTest {
     fun testAddOneAircraftCarrier() {
         add(AircraftCarrier(), Horizontal(0, 0))
 
-        assertPoints(AircraftCarrier().name, listOf(Point(0, 0),
-                                                      Point(1, 0),
-                                                      Point(2, 0),
-                                                      Point(3, 0),
-                                                      Point(4, 0)))
+        assertPoints(AircraftCarrier().name, listOf(Cell(0, 0),
+                                                      Cell(1, 0),
+                                                      Cell(2, 0),
+                                                      Cell(3, 0),
+                                                      Cell(4, 0)))
     }
 
     /*
@@ -238,7 +238,7 @@ class SetupBoardTest {
         }
     }
 
-    private fun assertPoints(shipName: String, points: List<Point>) {
+    private fun assertPoints(shipName: String, points: List<Cell>) {
         assertThat(board?.pointsOf(shipName)).containsAllIn(points)
     }
 

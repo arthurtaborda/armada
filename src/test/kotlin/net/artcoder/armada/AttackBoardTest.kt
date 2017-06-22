@@ -46,6 +46,6 @@ class AttackBoardTest {
     }
 
     private fun attacks(x: Int, y: Int): AttackResult {
-        return board!!.attack(Point(x, y))
+        return board!!.attack(Cell(x, y))
     }
 }
