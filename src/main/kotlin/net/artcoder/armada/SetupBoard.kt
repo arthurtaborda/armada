@@ -1,6 +1,5 @@
 package net.artcoder.armada
 
-import com.google.common.collect.Lists.newArrayList
 import java.util.*
 
 class SetupBoard(private val size: Int,
@@ -9,7 +8,7 @@ class SetupBoard(private val size: Int,
     private val table = Array(size) { Array(size) { false } } //matrix of (size x size) with all false elements
     private val placedShips = mutableMapOf<UUID, PlacedShip>()
 
-    val availableShips: MutableList<Ship> = newArrayList(availableShips)
+    val availableShips: MutableList<Ship> = availableShips.toMutableList()
 
     fun add(ship: Ship, direction: Direction): UUID {
         if (!availableShips.contains(ship)) {
