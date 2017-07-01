@@ -1,7 +1,6 @@
 package net.artcoder.armada.ui
 
 import net.artcoder.armada.*
-import net.artcoder.armada.ships.*
 import tornadofx.*
 
 class SetupBoardController : Controller() {
@@ -45,9 +44,6 @@ class SetupBoardController : Controller() {
     }
 
     private fun defaultBoard(): SetupBoard {
-        return SetupBoard(10, mutableListOf(
-                Submarine(), Submarine(),
-                Destroyer(), Destroyer(),
-                Cruiser(), Battleship(), AircraftCarrier()))
+        return SetupBoard(10, listOf(1, 1, 2, 2, 3, 4, 5))
     }
 }

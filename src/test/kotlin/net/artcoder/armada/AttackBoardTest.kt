@@ -1,7 +1,6 @@
 package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
-import net.artcoder.armada.ships.Destroyer
 import org.testng.annotations.Test
 
 class AttackBoardTest {
@@ -56,6 +55,6 @@ class AttackBoardTest {
         return board.attack(Point(x, y))
     }
 
-    private fun board() = BoardBuilder().withShip(Destroyer(), Horizontal(4, 4))
+    private fun board() = BoardBuilder().withShip(2, Horizontal(4, 4))
             .build()
 }

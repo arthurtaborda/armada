@@ -1,33 +1,27 @@
 package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
-import net.artcoder.armada.ships.*
 import org.testng.Assert.fail
 import org.testng.annotations.Test
 import java.util.*
 
 class SetupBoardTest {
 
-    private val ships = mutableListOf<Ship>(
-            Submarine(), Submarine(),
-            Destroyer(), Destroyer(),
-            Cruiser(), Battleship(), AircraftCarrier())
-
+    private val ships = listOf(1, 1, 2, 2, 3, 4, 5)
     /*
     when finish without placing all ships
     throw ShipsUnplacedException
      */
     @Test
     fun testFinishWithoutPlacingAllShips() {
-        val availableShips = mutableListOf<Ship>(Destroyer(), Submarine())
+        val availableShips = listOf(2, 1)
         val setupBoard = setupBoard(availableShips)
 
-        assertShipsAreUnplaced(setupBoard, availableShips)
+        assertShipsAreUnplaced(setupBoard)
 
         setupBoard.placeShip(Vertical(0, 0))
-        availableShips.removeAt(0)
 
-        assertShipsAreUnplaced(setupBoard, availableShips)
+        assertShipsAreUnplaced(setupBoard)
     }
 
     /*
@@ -36,7 +30,7 @@ class SetupBoardTest {
      */
     @Test
     fun testFinishPlacingAllShips() {
-        val availableShips = mutableListOf<Ship>(Destroyer(), Submarine())
+        val availableShips = listOf(2, 1)
         val setupBoard = setupBoard(availableShips)
 
         setupBoard.placeShip(Vertical(0, 0))
@@ -52,7 +46,7 @@ class SetupBoardTest {
      */
     @Test
     fun testRemoveShip() {
-        val availableShips = mutableListOf<Ship>(Destroyer(), Submarine())
+        val availableShips = listOf(2, 1)
         val setupBoard = setupBoard(availableShips)
 
         val destroyerId = setupBoard.placeShip(Horizontal(5, 5))
@@ -63,15 +57,13 @@ class SetupBoardTest {
         assertThat(destroyerId).isNotEqualTo(destroyerId2)
     }
 
-    private fun setupBoard(availableShips: MutableList<Ship>) = SetupBoard(10, availableShips)
-
     /*
     when place ship vertically
     it should be on initial point plus ship size on right
      */
     @Test
     fun testPlaceVertically() {
-        val board = setupBoard(mutableListOf<Ship>(Cruiser(), Battleship(), AircraftCarrier(), Destroyer(), Submarine()))
+        val board = setupBoard(listOf(3, 4, 5, 2, 1))
         val aircraftCarrier = board.placeShip(Vertical(0, 0))
         val battleship = board.placeShip(Vertical(1, 1))
         val cruiser = board.placeShip(Vertical(2, 2))
@@ -111,7 +103,6 @@ class SetupBoardTest {
         assertOutOfBounds(Vertical(6, 6))
     }
 
-
     /*
     when placeShip one ship and then placeShip second ship with overlapping
     it should throw ShipOverlapException
@@ -124,6 +115,7 @@ class SetupBoardTest {
         assertShipOverlap(Horizontal(0, 7), Vertical(4, 4))
     }
 
+
     /*
     given current ship to place a cruiser
     when placing horizontally on (8,8) canPlace = false
@@ -133,7 +125,7 @@ class SetupBoardTest {
      */
     @Test
     fun testCheckShipAvailabilityHorizontally() {
-        val availableShips = mutableListOf<Ship>(Cruiser())
+        val availableShips = listOf(3)
         val setupBoard = setupBoard(availableShips)
 
         val canPlaceOn88 = setupBoard.canPlace(Horizontal(8, 8))
@@ -156,7 +148,7 @@ class SetupBoardTest {
      */
     @Test
     fun testCheckShipAvailabilityVertically() {
-        val availableShips = mutableListOf<Ship>(Cruiser())
+        val availableShips = listOf(3)
         val setupBoard = setupBoard(availableShips)
 
         val canPlaceOn88 = setupBoard.canPlace(Vertical(8, 8))
@@ -177,7 +169,7 @@ class SetupBoardTest {
      */
     @Test
     fun testPointsAvailableHorizontally() {
-        val availableShips = mutableListOf<Ship>(Battleship())
+        val availableShips = listOf(4)
         val setupBoard = setupBoard(availableShips)
 
         val pointsAvailableOn99 = setupBoard.pointsAvailable(Horizontal(9, 9))
@@ -198,7 +190,7 @@ class SetupBoardTest {
      */
     @Test
     fun testPointsAvailableVertically() {
-        val availableShips = mutableListOf<Ship>(Battleship())
+        val availableShips = listOf(4)
         val setupBoard = setupBoard(availableShips)
 
         val pointsAvailableOn99 = setupBoard.pointsAvailable(Vertical(9, 9))
@@ -218,17 +210,17 @@ class SetupBoardTest {
      */
     @Test
     fun testPlacementOnFinishBoard() {
-        val availableShips = mutableListOf<Ship>()
+        val availableShips = listOf<Int>()
         val setupBoard = setupBoard(availableShips)
 
         assertThat(setupBoard.canPlace(Horizontal(4, 4))).isFalse()
     }
 
-
     private fun assertOutOfBounds(direction: Direction) {
         val board = setupBoard(ships)
         assertThat(board.canPlace(direction)).isFalse()
     }
+
 
     private fun assertShipOverlap(direction1: Direction, direction2: Direction) {
         val board = setupBoard(ships)
@@ -240,13 +232,13 @@ class SetupBoardTest {
         assertThat(board.pointsOf(uuid)).containsAllIn(points)
     }
 
-    private fun assertShipsAreUnplaced(setupBoard: SetupBoard,
-                                       availableShips: List<Ship>) {
+    private fun assertShipsAreUnplaced(setupBoard: SetupBoard) {
         try {
             setupBoard.finish()
             fail()
         } catch(e: ShipsUnplacedException) {
-            assertThat(e.ships).containsAllIn(availableShips)
         }
     }
+
+    private fun setupBoard(availableShips: List<Int>) = SetupBoard(10, availableShips)
 }

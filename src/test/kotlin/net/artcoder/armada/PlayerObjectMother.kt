@@ -1,7 +1,5 @@
 package net.artcoder.armada
 
-import net.artcoder.armada.ships.*
-
 object PlayerObjectMother {
 
 
@@ -19,10 +17,7 @@ object PlayerObjectMother {
     }
 
     private fun setupBoard(): SetupBoard {
-        return SetupBoard(10, mutableListOf(
-                Submarine(), Submarine(),
-                Destroyer(), Destroyer(),
-                Cruiser(), Battleship(), AircraftCarrier()))
+        return SetupBoard(10, listOf(1, 1, 2, 2, 3, 4, 5))
     }
 
     fun playerOnePoints(): MutableList<Point> {

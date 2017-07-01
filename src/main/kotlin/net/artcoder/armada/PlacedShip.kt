@@ -2,7 +2,7 @@ package net.artcoder.armada
 
 import java.util.*
 
-data class PlacedShip(val ship: Ship, val points: List<Point>) {
+data class PlacedShip(val points: List<Point>) {
 
     val id: UUID = UUID.randomUUID()
     private var hits = 0
@@ -17,6 +17,6 @@ data class PlacedShip(val ship: Ship, val points: List<Point>) {
     }
 
     fun isDead(): Boolean {
-        return hits == ship.size
+        return hits == points.size
     }
 }

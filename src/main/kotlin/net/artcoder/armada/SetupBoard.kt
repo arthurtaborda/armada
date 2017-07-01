@@ -3,23 +3,23 @@ package net.artcoder.armada
 import java.util.*
 
 
-class SetupBoard(private val boardSize: Int, availableShips: List<Ship>) {
+class SetupBoard(private val boardSize: Int, availableShips: List<Int>) {
 
     private val table = Array(boardSize) { Array(boardSize) { false } } //matrix of (boardSize x boardSize) with all false elements
     private val placedShips = mutableMapOf<UUID, PlacedShip>()
 
-    val availableShips: MutableList<Ship> = availableShips.toMutableList()
+    val availableShips: MutableList<Int> = availableShips.toMutableList()
 
-    private val currentShipToPlace: Ship?
+    private val currentShipToPlace: Int?
         get() = availableShips
-                .sortedWith(compareByDescending(Ship::size))
+                .sortedWith(compareByDescending({ it }))
                 .firstOrNull()
 
     fun placeShip(direction: Direction): UUID {
-        val points = direction.points(currentShipToPlace!!.size)
+        val points = direction.points(currentShipToPlace!!)
         points.forEach({ table[it.x][it.y] = true })
 
-        val placedShip = PlacedShip(currentShipToPlace!!, points)
+        val placedShip = PlacedShip(points)
         placedShips[placedShip.id] = placedShip
 
         availableShips.remove(currentShipToPlace!!)
@@ -39,7 +39,7 @@ class SetupBoard(private val boardSize: Int, availableShips: List<Ship>) {
 
     fun finish(): Board {
         if (!canFinish()) {
-            throw ShipsUnplacedException(availableShips)
+            throw ShipsUnplacedException()
         }
 
         return Board(boardSize, placedShips.values.toList())
@@ -50,7 +50,7 @@ class SetupBoard(private val boardSize: Int, availableShips: List<Ship>) {
     fun remove(shipId: UUID) {
         placedShips.remove(shipId)?.let {
             it.points.forEach({ table[it.x][it.y] = false })
-            availableShips.add(it.ship)
+            availableShips.add(it.points.size)
         }
     }
 
@@ -59,7 +59,7 @@ class SetupBoard(private val boardSize: Int, availableShips: List<Ship>) {
             return false
         }
 
-        val points = direction.points(currentShipToPlace!!.size)
+        val points = direction.points(currentShipToPlace!!)
         val lastPoint = points.last()
         val outOfBounds = lastPoint.x >= boardSize || lastPoint.y >= boardSize
 
@@ -72,7 +72,7 @@ class SetupBoard(private val boardSize: Int, availableShips: List<Ship>) {
     }
 
     fun pointsAvailable(direction: Direction): List<Point> {
-        return direction.points(currentShipToPlace!!.size).filter { it.x < boardSize && it.y < boardSize }
+        return direction.points(currentShipToPlace!!).filter { it.x < boardSize && it.y < boardSize }
     }
 }
 

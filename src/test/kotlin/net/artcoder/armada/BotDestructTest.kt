@@ -4,35 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import net.artcoder.armada.AttackResult.*
 import org.testng.annotations.Test
 
-class BotTest {
-
-    /*
-    when attack misses
-    next attack should be random
-     */
-    @Test
-    fun testAttackMiss() {
-        val bot = bot()
-
-        val point = bot.nextPoint()
-        bot.reportAttack(point, MISS)
-
-        assertRandomPoint(bot.nextPoint())
-    }
-
-    /*
-    when attack sinks
-    next attack should be random
-     */
-    @Test
-    fun testAttackSinks() {
-        val bot = bot()
-
-        val point = bot.nextPoint()
-        bot.reportAttack(point, SUNK)
-
-        assertRandomPoint(bot.nextPoint())
-    }
+class BotDestructTest : BotTestCase() {
 
     /*
     when attack hits
@@ -40,13 +12,14 @@ class BotTest {
      */
     @Test
     fun testAttackHitsRight() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val point = bot.nextPoint()
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(point.right())
     }
 
@@ -56,14 +29,15 @@ class BotTest {
      */
     @Test
     fun testAttackHitsDown() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(point.down())
     }
 
@@ -73,7 +47,8 @@ class BotTest {
      */
     @Test
     fun testAttackHitsLeft() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
@@ -81,7 +56,7 @@ class BotTest {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(point.left())
     }
 
@@ -91,7 +66,8 @@ class BotTest {
      */
     @Test
     fun testAttackHitsUp() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val point = bot.nextPoint()
         bot.reportAttack(point.left(), MISS)
@@ -100,7 +76,7 @@ class BotTest {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(point.up())
     }
 
@@ -110,7 +86,8 @@ class BotTest {
      */
     @Test
     fun testContinueRightAttack() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -118,7 +95,7 @@ class BotTest {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack2.right())
     }
 
@@ -128,7 +105,8 @@ class BotTest {
      */
     @Test
     fun testGoLeftAfterMiss() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -138,7 +116,7 @@ class BotTest {
         bot.reportAttack(attack3, MISS)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(attack2).isEqualTo(attack1.right())
         assertThat(attack3).isEqualTo(attack2.right())
         assertThat(nextAttack).isEqualTo(attack1.left())
@@ -150,7 +128,8 @@ class BotTest {
      */
     @Test
     fun testGoLeftIfNextCellIsAttacked() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -159,7 +138,7 @@ class BotTest {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack1.left())
     }
 
@@ -169,7 +148,8 @@ class BotTest {
      */
     @Test
     fun testGoLeftIfNextCellIsOutOfBoard() {
-        val bot = bot(listOf(Point(8, 9)))
+        val pointGenerator = pointGenerator(listOf(Point(8, 9)))
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -177,7 +157,7 @@ class BotTest {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack1.left())
     }
 
@@ -187,7 +167,8 @@ class BotTest {
      */
     @Test
     fun testContinueDownAttack() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -196,7 +177,7 @@ class BotTest {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack2.down())
     }
 
@@ -206,7 +187,8 @@ class BotTest {
      */
     @Test
     fun testGoUpAfterMiss() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -217,7 +199,7 @@ class BotTest {
         bot.reportAttack(attack3, MISS)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -227,7 +209,8 @@ class BotTest {
      */
     @Test
     fun testGoUpIfNextCellIsAttacked() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -237,7 +220,7 @@ class BotTest {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -247,7 +230,8 @@ class BotTest {
      */
     @Test
     fun testGoUpIfNextCellIsOutOfBoard() {
-        val bot = bot(listOf(Point(8, 8)))
+        val pointGenerator = pointGenerator(listOf(Point(8, 8)))
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -256,7 +240,7 @@ class BotTest {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -266,7 +250,8 @@ class BotTest {
      */
     @Test
     fun testContinueLeftAttack() {
-        val bot = bot()
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -276,37 +261,8 @@ class BotTest {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        assertNotRandomPoint(nextAttack)
+        pointGenerator.assertCount(1)
         assertThat(nextAttack).isEqualTo(attack2.left())
-    }
-
-    private fun bot() = Bot(10, PointGeneratorStub(
-            listOf(
-                    RandomPoint(3, 4),
-                    RandomPoint(1, 2),
-                    RandomPoint(5, 6),
-                    RandomPoint(7, 8)
-            )))
-
-    private fun bot(points: List<Point>) = Bot(10, PointGeneratorStub(points))
-
-    class PointGeneratorStub(points: List<Point>) : PointGenerator {
-
-        val points = points.toMutableList()
-
-        override fun randomPoint(): Point {
-            return points.removeAt(0)
-        }
-    }
-
-    class RandomPoint(x: Int, y: Int) : Point(x, y)
-
-    private fun assertRandomPoint(point: Point) {
-        assertThat(point).isInstanceOf(RandomPoint::class.java)
-    }
-
-    private fun assertNotRandomPoint(point: Point) {
-        assertThat(point).isNotInstanceOf(RandomPoint::class.java)
     }
 }
 

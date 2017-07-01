@@ -2,10 +2,10 @@ package net.artcoder.armada
 
 class BoardBuilder {
 
-    private val ships = mutableListOf<Pair<Ship, Direction>>()
+    private val ships = mutableListOf<Pair<Int, Direction>>()
 
-    fun withShip(ship: Ship, direction: Direction): BoardBuilder {
-        ships.add(Pair(ship, direction))
+    fun withShip(shipSize: Int, direction: Direction): BoardBuilder {
+        ships.add(Pair(shipSize, direction))
         return this
     }
 

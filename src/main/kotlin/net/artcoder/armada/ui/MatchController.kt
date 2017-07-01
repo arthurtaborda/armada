@@ -6,7 +6,7 @@ import tornadofx.*
 class MatchController(playerOne: Player, playerTwo: Player): Controller() {
 
     val game = BattleshipGame(playerOne, playerTwo)
-    val bot = Bot(10, RandomPointGenerator(Point(10, 10)))
+    val bot = Bot(10, RandomPointGenerator(10))
 
     fun canAttack(point: Point): Boolean {
         return game.canAttack(point)
