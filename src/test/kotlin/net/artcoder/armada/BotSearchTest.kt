@@ -55,8 +55,8 @@ class BotSearchTest : BotTestCase() {
     }
 
     /*
-    when attack sinks
-    next attack should be random
+    given random point that was already attacked
+    next point should be generated again
      */
     @Test
     fun testRandomAttackCannotDuplicate() {
