@@ -1,14 +1,12 @@
 language: java
 jdk:
-  - openjdk8
   - oraclejdk8
+  
 sudo: false
 addons:
   apt:
     packages:
       - oracle-java8-installer
-
-dist: trusty
 
 branches:
   only:
