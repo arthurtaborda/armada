@@ -1,5 +1,6 @@
 package net.artcoder.armada
 
+import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import net.artcoder.armada.PlayerObjectMother.playerOne
 import net.artcoder.armada.PlayerObjectMother.playerTwo
@@ -17,7 +18,7 @@ class PlayerAttackTest {
         val playerTwo = playerTwo()
         val game = BattleshipGame(playerOne, playerTwo)
 
-        val attackResult = game.attack(2, 9) // player one attack
+        val attackResult = game.attack(Point(2, 9)) // player one attack
 
         assertThat(attackResult).isEqualTo(AttackResult.HIT)
         assertThat(playerOne.state).isEqualTo(Player.State.WAITING)
@@ -34,7 +35,7 @@ class PlayerAttackTest {
         val playerTwo = playerTwo()
         val game = BattleshipGame(playerOne, playerTwo)
 
-        val attackResult = game.attack(3, 3)
+        val attackResult = game.attack(Point(3, 3))
 
         assertThat(attackResult).isEqualTo(AttackResult.MISS)
         assertThat(playerOne.state).isEqualTo(Player.State.WAITING)
@@ -51,9 +52,9 @@ class PlayerAttackTest {
         val playerTwo = playerTwo()
         val game = BattleshipGame(playerOne, playerTwo)
 
-        game.attack(2, 9) //player one attack
-        game.attack(4, 5) //player two attack
-        val attackResult = game.attack(2, 8) //player one attack
+        game.attack(Point(2, 9)) //player one attack
+        game.attack(Point(4, 5)) //player two attack
+        val attackResult = game.attack(Point(2, 8)) //player one attack
 
         assertThat(attackResult).isEqualTo(AttackResult.SUNK)
         assertThat(playerOne.state).isEqualTo(Player.State.WAITING)
@@ -108,17 +109,34 @@ class PlayerAttackTest {
             for (j in 1..9) {
                 val point = playerTwoPoints.removeAt(0)
 
-                val playerOneAttackResult = game.attack(point.x, point.y)
+                val playerOneAttackResult = game.attack(Point(point.x, point.y))
 
                 if (playerTwoPoints.isEmpty()) {
                     return playerOneAttackResult
                 }
 
-                game.attack(i, j)
+                game.attack(Point(i, j))
             }
         }
 
-        return AttackResult.ALREADY_ATTACKED
+        return AttackResult.MISS
+    }
+
+    /*
+    player one can attack only points not attacked
+     */
+    @Test
+    fun testCanAttack() {
+        val playerOne = PlayerObjectMother.playerOne()
+        val playerTwo = PlayerObjectMother.playerTwo()
+
+        playerOne.attack(playerTwo, Point(4, 5))
+        playerTwo.attack(playerOne, Point(7, 4))
+        playerOne.attack(playerTwo, Point(7, 9))
+
+        Truth.assertThat(playerOne.canAttack(playerTwo, Point(4, 5))).isFalse()
+        Truth.assertThat(playerOne.canAttack(playerTwo, Point(7, 4))).isTrue()
+        Truth.assertThat(playerOne.canAttack(playerTwo, Point(7, 9))).isFalse()
     }
 }
 

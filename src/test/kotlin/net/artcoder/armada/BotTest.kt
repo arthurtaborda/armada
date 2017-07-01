@@ -139,6 +139,8 @@ class BotTest {
 
         val nextAttack = bot.nextPoint()
         assertNotRandomPoint(nextAttack)
+        assertThat(attack2).isEqualTo(attack1.right())
+        assertThat(attack3).isEqualTo(attack2.right())
         assertThat(nextAttack).isEqualTo(attack1.left())
     }
 
@@ -167,7 +169,7 @@ class BotTest {
      */
     @Test
     fun testGoLeftIfNextCellIsOutOfBoard() {
-        val bot = bot(listOf(RandomPoint(8, 9)))
+        val bot = bot(listOf(Point(8, 9)))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -245,7 +247,7 @@ class BotTest {
      */
     @Test
     fun testGoUpIfNextCellIsOutOfBoard() {
-        val bot = bot(listOf(RandomPoint(8, 8)))
+        val bot = bot(listOf(Point(8, 8)))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -286,9 +288,9 @@ class BotTest {
                     RandomPoint(7, 8)
             )))
 
-    private fun bot(points: List<RandomPoint>) = Bot(10, PointGeneratorStub(points))
+    private fun bot(points: List<Point>) = Bot(10, PointGeneratorStub(points))
 
-    class PointGeneratorStub(points: List<RandomPoint>) : PointGenerator {
+    class PointGeneratorStub(points: List<Point>) : PointGenerator {
 
         val points = points.toMutableList()
 
@@ -297,13 +299,7 @@ class BotTest {
         }
     }
 
-    class RandomPoint(override val x: Int, override val y: Int) : Point {
-
-        override fun up() = Cell(x, y - 1)
-        override fun right() = Cell(x + 1, y)
-        override fun left() = Cell(x - 1, y)
-        override fun down() = Cell(x, y + 1)
-    }
+    class RandomPoint(x: Int, y: Int) : Point(x, y)
 
     private fun assertRandomPoint(point: Point) {
         assertThat(point).isInstanceOf(RandomPoint::class.java)

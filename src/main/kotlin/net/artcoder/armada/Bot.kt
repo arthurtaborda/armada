@@ -2,11 +2,15 @@ package net.artcoder.armada
 
 import net.artcoder.armada.Bot.DestructionDirection.*
 import net.artcoder.armada.Bot.State.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator) {
 
+    val log: Logger = LoggerFactory.getLogger(Bot::class.java)
+
     internal enum class State {
-        SEARCHING, TARGET, DESTROYING
+        SEARCH, TARGET, DESTROY
     }
 
     internal enum class DestructionDirection {
@@ -17,7 +21,7 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
         NOT_ATTACKED, MISS, HIT
     }
 
-    private var state = SEARCHING
+    private var state = SEARCH
     private var destructionDirection: DestructionDirection? = null
     private var nextPointToAttack: Point? = null
     private val table = Array(boardSize) { Array(boardSize) { CellState.NOT_ATTACKED } } // matrix of (size x size) with all false elements
@@ -34,20 +38,24 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
         if (attackResult == AttackResult.HIT) {
             table[attackPoint.x][attackPoint.y] = CellState.HIT
 
-            if(state == SEARCHING) {
+            if(state == SEARCH) {
+                log.debug("Bot: SEARCH to TARGET")
                 state = TARGET
                 nextPointToAttack = getNextPossibleTargetPoint(attackPoint)
             } else if(state == TARGET) {
-                state = DESTROYING
+                log.debug("Bot: TARGET to DESTROY")
+                state = DESTROY
                 nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
             }
 
         } else if (attackResult == AttackResult.MISS) {
             table[attackPoint.x][attackPoint.y] = CellState.MISS
-            if (state == DESTROYING) {
+            if (state == DESTROY) {
+                log.debug("Bot: DESTROY MISS")
                 changeDestructionDirection(attackPoint)
             }
         } else if (attackResult == AttackResult.SUNK) {
+            log.debug("Bot: SUNK")
             table[attackPoint.x][attackPoint.y] = CellState.HIT
             nextPointToAttack = null
         }

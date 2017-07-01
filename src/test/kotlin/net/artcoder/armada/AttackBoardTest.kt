@@ -2,50 +2,60 @@ package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
 import net.artcoder.armada.ships.Destroyer
-import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 class AttackBoardTest {
 
-    var board: Board? = null
-
-    @BeforeMethod
-    fun setUp() {
-        board = BoardBuilder().withShip(Destroyer(), Horizontal(4, 4))
-                .build()
-    }
-
+    /*
+    when attack hits
+    return hit
+     */
     @Test
-    fun whenAttackHits_returnHit() {
-        val result = attacks(4, 4)
+    fun testHit() {
+        val result = attack(board(), 4, 4)
 
         assertThat(result).isEqualTo(AttackResult.HIT)
     }
 
+    /*
+    when attack misses
+    return mis
+     */
     @Test
-    fun whenAttackMisses_returnMiss() {
-        val result = attacks(5, 5)
+    fun testMiss() {
+        val result = attack(board(), 5, 5)
 
         assertThat(result).isEqualTo(AttackResult.MISS)
     }
 
+    /*
+    when attack sinks
+    return sunk
+     */
     @Test
-    fun whenAttacksSamePointTwice_returnAlreadyAttacked() {
-        attacks(4, 4)
-        val result = attacks(4, 4)
-
-        assertThat(result).isEqualTo(AttackResult.ALREADY_ATTACKED)
-    }
-
-    @Test
-    fun whenAttacksAllDestroyer_returnSunk() {
-        attacks(4, 4)
-        val result = attacks(5, 4)
+    fun testSink() {
+        val board = board()
+        attack(board, 4, 4)
+        val result = attack(board, 5, 4)
 
         assertThat(result).isEqualTo(AttackResult.SUNK)
     }
 
-    private fun attacks(x: Int, y: Int): AttackResult {
-        return board!!.attack(Cell(x, y))
+    /*
+    when already attacked
+    throw PointAlreadyAttackedException
+     */
+    @Test(expectedExceptions = arrayOf(PointAlreadyAttackedException::class))
+    fun testAlreadyAttacked() {
+        val board = board()
+        attack(board, 4, 4)
+        attack(board, 4, 4)
     }
+
+    private fun attack(board: Board, x: Int, y: Int): AttackResult {
+        return board.attack(Point(x, y))
+    }
+
+    private fun board() = BoardBuilder().withShip(Destroyer(), Horizontal(4, 4))
+            .build()
 }

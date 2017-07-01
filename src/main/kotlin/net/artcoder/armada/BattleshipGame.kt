@@ -24,8 +24,8 @@ class BattleshipGame(private val playerOne: Player,
         return playerTwo
     }
 
-    fun attack(x: Int, y: Int): AttackResult {
-        val attackResult = attackingPlayer().attack(waitingPlayer(), Cell(x, y))
+    fun attack(point: Point): AttackResult {
+        val attackResult = attackingPlayer().attack(waitingPlayer(), point)
 
         when (attackResult) {
             AttackResult.HIT -> flipStatus()
@@ -37,7 +37,6 @@ class BattleshipGame(private val playerOne: Player,
                     flipStatus()
                 }
             }
-            AttackResult.ALREADY_ATTACKED -> TODO()
         }
 
         return attackResult
@@ -61,6 +60,10 @@ class BattleshipGame(private val playerOne: Player,
             playerOne.state = LOST
             playerTwo.state = WON
         }
+    }
+
+    fun canAttack(point: Point): Boolean {
+        return attackingPlayer().canAttack(waitingPlayer(), point)
     }
 
 }
