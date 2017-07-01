@@ -3,19 +3,13 @@ package net.artcoder.armada
 import com.google.common.truth.Truth
 
 
-class PointGeneratorMock(boardSize: Int) : PointGenerator {
-
-    constructor(boardSize: Int, points: List<Point>) : this(boardSize) {
-        this.points = points.toMutableList()
-    }
+class PointGeneratorMock(val points: List<Point>) : PointGenerator {
 
     private var count = 0
-    private var points = mutableListOf<Point>()
-    private val generator = RandomPointGenerator(boardSize)
 
     override fun randomPoint(): Point {
         count++
-        return points.firstOrNull() ?: generator.randomPoint()
+        return points.first()
     }
 
     fun assertCount(timesUsed: Int) {
