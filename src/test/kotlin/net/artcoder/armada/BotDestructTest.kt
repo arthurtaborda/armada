@@ -7,8 +7,65 @@ import org.testng.annotations.Test
 class BotDestructTest : BotTestCase() {
 
     /*
+    when attack hits and next attack misses
+    next attack should be down
+     */
+    @Test
+    fun testAttackHitsThenMissesOnce() {
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
+
+        val point = bot.nextPoint()
+        bot.reportAttack(point, HIT)
+        bot.reportAttack(bot.nextPoint(), MISS)
+
+        val nextAttack = bot.nextPoint()
+        pointGenerator.verifyCount(1)
+        assertThat(nextAttack).isEqualTo(point.down())
+    }
+
+    /*
+    when attack hits and next attack misses and next attack misses
+    next attack should be left
+     */
+    @Test
+    fun testAttackHitsThenMissesTwice() {
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
+
+        val point = bot.nextPoint()
+        bot.reportAttack(point, HIT)
+        bot.reportAttack(bot.nextPoint(), MISS)
+        bot.reportAttack(bot.nextPoint(), MISS)
+
+        val nextAttack = bot.nextPoint()
+        pointGenerator.verifyCount(1)
+        assertThat(nextAttack).isEqualTo(point.left())
+    }
+
+    /*
+    when attack hits and next attack misses and next attack misses
+    next attack should be up
+     */
+    @Test
+    fun testAttackHitsThenMissesThrice() {
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
+
+        val point = bot.nextPoint()
+        bot.reportAttack(point, HIT)
+        bot.reportAttack(bot.nextPoint(), MISS)
+        bot.reportAttack(bot.nextPoint(), MISS)
+        bot.reportAttack(bot.nextPoint(), MISS)
+
+        val nextAttack = bot.nextPoint()
+        pointGenerator.verifyCount(1)
+        assertThat(nextAttack).isEqualTo(point.up())
+    }
+
+    /*
     when attack hits
-    next attack should be to the right
+    next attack should be right
      */
     @Test
     fun testAttackHitsRight() {
@@ -19,7 +76,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.right())
     }
 
@@ -37,7 +94,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.down())
     }
 
@@ -56,7 +113,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.left())
     }
 
@@ -76,7 +133,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.up())
     }
 
@@ -95,8 +152,30 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack2.right())
+    }
+
+    /*
+    when attack hits and next attack right hits and next attack right hits
+    next attack should be right to third attack
+     */
+    @Test
+    fun testContinueRightAttack2() {
+        val pointGenerator = pointGenerator()
+        val bot = bot(pointGenerator)
+
+        val attack1 = bot.nextPoint()
+        bot.reportAttack(attack1, HIT)
+        val attack2 = bot.nextPoint()
+        bot.reportAttack(attack2, HIT)
+        val attack3 = bot.nextPoint()
+        bot.reportAttack(attack3, HIT)
+
+        val nextAttack = bot.nextPoint()
+        pointGenerator.verifyCount(1)
+        assertThat(attack3).isEqualTo(attack2.right())
+        assertThat(nextAttack).isEqualTo(attack3.right())
     }
 
     /*
@@ -116,7 +195,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack3, MISS)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(attack2).isEqualTo(attack1.right())
         assertThat(attack3).isEqualTo(attack2.right())
         assertThat(nextAttack).isEqualTo(attack1.left())
@@ -138,7 +217,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack1.left())
     }
 
@@ -157,7 +236,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack1.left())
     }
 
@@ -177,7 +256,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack2.down())
     }
 
@@ -199,7 +278,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack3, MISS)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -220,7 +299,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -240,7 +319,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -261,7 +340,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(attack2.left())
     }
 }

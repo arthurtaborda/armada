@@ -23,6 +23,7 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
 
     private var state = SEARCH
     private var destructionDirection: DestructionDirection? = null
+    private var targetPoint: Point? = null
     private var nextPointToAttack: Point? = null
     private val table = Array(boardSize) { Array(boardSize) { CellState.NOT_ATTACKED } } // matrix of (size x size) with all false elements
 
@@ -31,28 +32,45 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
             return nextPointToAttack!!
         }
 
-        return pointGenerator.randomPoint()
+        while (true) {
+            val randomPoint = pointGenerator.randomPoint()
+            if(isAvailableForAttack(randomPoint)) {
+                return randomPoint
+            }
+        }
     }
 
     fun reportAttack(attackPoint: Point, attackResult: AttackResult) {
         if (attackResult == AttackResult.HIT) {
             table[attackPoint.x][attackPoint.y] = CellState.HIT
 
-            if(state == SEARCH) {
-                log.debug("Bot: SEARCH to TARGET")
-                state = TARGET
-                nextPointToAttack = getNextPossibleTargetPoint(attackPoint)
-            } else if(state == TARGET) {
-                log.debug("Bot: TARGET to DESTROY")
-                state = DESTROY
-                nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
+            when (state) {
+                Bot.State.SEARCH  -> {
+                    log.debug("Bot: SEARCH to TARGET")
+                    state = TARGET
+                    targetPoint = attackPoint
+                    nextPointToAttack = getNextPossibleTargetPoint(attackPoint)
+                }
+                Bot.State.TARGET  -> {
+                    log.debug("Bot: TARGET to DESTROY")
+                    state = DESTROY
+                    targetPoint = null
+                    nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
+                }
+                Bot.State.DESTROY -> {
+                    log.debug("Bot: continue to DESTROY")
+                    nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
+                }
             }
-
         } else if (attackResult == AttackResult.MISS) {
             table[attackPoint.x][attackPoint.y] = CellState.MISS
             if (state == DESTROY) {
                 log.debug("Bot: DESTROY MISS")
                 changeDestructionDirection(attackPoint)
+            }
+            if (state == TARGET) {
+                log.debug("Bot: TARGET MISS")
+                nextPointToAttack = getNextPossibleTargetPoint(targetPoint!!)
             }
         } else if (attackResult == AttackResult.SUNK) {
             log.debug("Bot: SUNK")

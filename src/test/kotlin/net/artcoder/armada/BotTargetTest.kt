@@ -8,7 +8,7 @@ class BotTargetTest : BotTestCase() {
 
     /*
     when attack hits
-    next attack should be to the right
+    next attack should be right
      */
     @Test
     fun testAttackHitsRight() {
@@ -19,8 +19,25 @@ class BotTargetTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.right())
+    }
+
+    /*
+    when attack hits on right edge
+    next attack should be down
+     */
+    @Test
+    fun testAttackHitsOnRightEdge() {
+        val pointGenerator = pointGenerator(listOf(Point (9, 3)))
+        val bot = bot(pointGenerator)
+
+        val point = bot.nextPoint()
+        bot.reportAttack(point, HIT)
+
+        val nextAttack = bot.nextPoint()
+        pointGenerator.verifyCount(1)
+        assertThat(nextAttack).isEqualTo(point.down())
     }
 
     /*
@@ -37,8 +54,26 @@ class BotTargetTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.down())
+    }
+
+    /*
+    when attack hits on left edge
+    next attack should be left
+     */
+    @Test
+    fun testAttackHitsOnBottomEdge() {
+        val pointGenerator = pointGenerator(listOf(Point(3, 9)))
+        val bot = bot(pointGenerator)
+
+        val point = bot.nextPoint()
+        bot.reportAttack(point.right(), MISS)
+        bot.reportAttack(point, HIT)
+
+        val nextAttack = bot.nextPoint()
+        pointGenerator.verifyCount(1)
+        assertThat(nextAttack).isEqualTo(point.left())
     }
 
     /*
@@ -56,8 +91,27 @@ class BotTargetTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.left())
+    }
+
+    /*
+    when attack hits on left edge
+    next attack should be up
+     */
+    @Test
+    fun testAttackHitsOnLeftEdge() {
+        val pointGenerator = pointGenerator(listOf(Point(0, 3)))
+        val bot = bot(pointGenerator)
+
+        val point = bot.nextPoint()
+        bot.reportAttack(point.right(), MISS)
+        bot.reportAttack(point.down(), MISS)
+        bot.reportAttack(point, HIT)
+
+        val nextAttack = bot.nextPoint()
+        pointGenerator.verifyCount(1)
+        assertThat(nextAttack).isEqualTo(point.up())
     }
 
     /*
@@ -76,7 +130,7 @@ class BotTargetTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.assertCount(1)
+        pointGenerator.verifyCount(1)
         assertThat(nextAttack).isEqualTo(point.up())
     }
 }
