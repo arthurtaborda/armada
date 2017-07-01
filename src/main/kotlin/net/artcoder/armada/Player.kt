@@ -1,14 +1,12 @@
 package net.artcoder.armada
 
-import net.artcoder.armada.Player.State.CREATING_BOARD
-
 class Player(val board: Board) {
 
     enum class State {
-        CREATING_BOARD, READY_TO_START, ATTACKING, WAITING, WON, LOST
+        ATTACKING, WAITING, WON, LOST
     }
 
-    var state = CREATING_BOARD
+    var state = State.ATTACKING
 
     fun attack(opponent: Player, point: Point): AttackResult {
         return opponent.receiveAttack(point)

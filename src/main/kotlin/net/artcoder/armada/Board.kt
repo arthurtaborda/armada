@@ -36,5 +36,12 @@ class Board(private val size: Int,
     fun isAttacked(point: Point): Boolean {
         return attacks[point.x][point.y]
     }
+
+    fun pointsOfShipIn(point: Point): List<Point> {
+        return placedShips
+                .filter { it.points.contains(point) }
+                .flatMap { it.points }
+                .toList()
+    }
 }
 

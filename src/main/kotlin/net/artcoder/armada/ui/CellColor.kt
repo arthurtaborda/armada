@@ -14,7 +14,7 @@ enum class CellColor(private val fillR: Int,
     HINT_INVALID(207, 60, 60, 98, 18, 32),
     MISS(40, 40, 40, 0, 0, 0),
     HIT(204, 110, 50, 0, 0, 0),
-    SUNK(0, 0, 0, 0, 0, 0),
+    SUNK(200, 0, 0, 0, 0, 0),
     SHIP(178, 194, 207, 0, 0, 0);
 
     val fill: Color

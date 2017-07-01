@@ -2,9 +2,13 @@ package net.artcoder.armada.ui
 
 import net.artcoder.armada.AttackResult
 import net.artcoder.armada.Player
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import tornadofx.*
 
 class MatchView(playerOne: Player, playerTwo: Player) : View() {
+
+    val logger: Logger = LoggerFactory.getLogger(MatchView::class.java)
 
     constructor() : this(RandomPlayer.create(), RandomPlayer.create())
 
@@ -15,8 +19,14 @@ class MatchView(playerOne: Player, playerTwo: Player) : View() {
     private val opponentBoard = BoardView()
 
     override val root = hbox {
-        add(playerBoard)
-        add(opponentBoard)
+        vbox {
+            label("You")
+            add(playerBoard)
+        }
+        vbox {
+            label("Opponent")
+            add(opponentBoard)
+        }
     }
 
     init {
@@ -35,22 +45,30 @@ class MatchView(playerOne: Player, playerTwo: Player) : View() {
             }
         }
         subscribe<MouseClickedCellEvent> { event ->
-            if (event.board == opponentBoard) {
+            if (event.board == opponentBoard && controller.canAttack(event.point)) {
                 val playerAttackResult = controller.attack(event.point)
                 when (playerAttackResult) {
                     AttackResult.HIT  -> opponentBoard.changeColor(event.point, CellColor.HIT)
                     AttackResult.MISS -> opponentBoard.changeColor(event.point, CellColor.MISS)
-                    AttackResult.SUNK -> opponentBoard.changeColor(event.point, CellColor.SUNK)
+                    AttackResult.SUNK -> {
+                        playerTwo.board
+                                .pointsOfShipIn(event.point)
+                                .forEach { opponentBoard.changeColor(it, CellColor.SUNK) }
+                    }
                 }
                 val botAttackPoint = controller.nextBotAttack()
                 val botAttackResult = controller.botAttack(botAttackPoint)
                 when (botAttackResult) {
                     AttackResult.HIT  -> playerBoard.changeColor(botAttackPoint, CellColor.HIT)
                     AttackResult.MISS -> playerBoard.changeColor(botAttackPoint, CellColor.MISS)
-                    AttackResult.SUNK -> playerBoard.changeColor(botAttackPoint, CellColor.SUNK)
+                    AttackResult.SUNK -> {
+                        playerOne.board
+                                .pointsOfShipIn(botAttackPoint)
+                                .forEach { playerBoard.changeColor(it, CellColor.SUNK) }
+                    }
                 }
-                println("Player: ${event.point} $playerAttackResult")
-                println("Bot: $botAttackPoint $botAttackResult")
+                logger.debug("Player: ${event.point} $playerAttackResult")
+                logger.debug("Bot: $botAttackPoint $botAttackResult")
             }
         }
     }
