@@ -73,6 +73,7 @@ class Bot(private val boardSize: Int, private val pointGenerator: PointGenerator
                 nextPointToAttack = getNextPossibleTargetPoint(targetPoint!!)
             }
         } else if (attackResult == AttackResult.SUNK) {
+            state = SEARCH
             log.debug("Bot: SUNK")
             table[attackPoint.x][attackPoint.y] = CellState.HIT
             nextPointToAttack = null

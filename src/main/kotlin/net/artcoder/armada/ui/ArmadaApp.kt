@@ -8,8 +8,8 @@ import tornadofx.*
 class ArmadaApp : App(SetupBoardView::class) {
     override fun start(stage: Stage) {
         stage.isResizable = false
-        stage.width = 700.0
-        stage.height = 400.0
+        stage.width = 650.0
+        stage.height = 350.0
         super.start(stage)
     }
 }
