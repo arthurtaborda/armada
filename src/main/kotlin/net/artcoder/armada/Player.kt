@@ -1,6 +1,6 @@
 package net.artcoder.armada
 
-class Player(val board: Board) {
+class Player(private val board: Board) {
 
     enum class State {
         ATTACKING, WAITING, WON, LOST
@@ -8,12 +8,24 @@ class Player(val board: Board) {
 
     var state = State.ATTACKING
 
-    fun attack(opponent: Player, point: Point): AttackResult {
-        return opponent.receiveAttack(point)
+    fun pointsOfPlacedShips(): List<Point> {
+        return board.pointsOfPlacedShips()
+    }
+
+    fun pointsOfShipIn(point: Point): List<Point> {
+        return board.pointsOfShipIn(point)
+    }
+
+    fun allShipsDestroyed(): Boolean {
+        return board.allShipsDestroyed()
     }
 
     fun canAttack(opponent: Player, point: Point): Boolean {
         return !opponent.isAttacked(point)
+    }
+
+    fun attack(opponent: Player, point: Point): AttackResult {
+        return opponent.receiveAttack(point)
     }
 
     private fun receiveAttack(point: Point): AttackResult {

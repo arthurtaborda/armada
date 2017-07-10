@@ -3,6 +3,7 @@ package net.artcoder.armada.ui
 import net.artcoder.armada.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.concurrent.TimeUnit
 
 class MatchController(private val player: Player,
                       private val opponent: Player,
@@ -17,6 +18,7 @@ class MatchController(private val player: Player,
                                 doNothingOnExit())
 
     val opponentBoard = BoardView(this, this, this)
+    var opponentAttacking = false
 
     init {
         player.pointsOfPlacedShips()
@@ -29,6 +31,7 @@ class MatchController(private val player: Player,
 
 
     private fun botAttack() {
+        TimeUnit.MILLISECONDS.sleep(500)
         val botAttackPoint = bot.nextPoint()
         val botAttackResult = game.attack(botAttackPoint)
         logger.debug("Bot: $botAttackPoint $botAttackResult")
@@ -41,8 +44,7 @@ class MatchController(private val player: Player,
             }
             AttackResult.MISS -> playerBoard.changeColor(botAttackPoint, CellColor.MISS)
             AttackResult.SUNK -> {
-                player.board
-                        .pointsOfShipIn(botAttackPoint)
+                player.pointsOfShipIn(botAttackPoint)
                         .forEach { playerBoard.changeColor(it, CellColor.SUNK) }
 
                 if (opponent.state == Player.State.WON) {
@@ -53,22 +55,27 @@ class MatchController(private val player: Player,
             }
         }
 
+        opponentAttacking = false
     }
 
     override fun enter(point: Point) {
-        if (game.canAttack(point)) {
-            opponentBoard.validHint(point)
-        } else {
-            opponentBoard.invalidHint(point)
+        if (!opponentAttacking) {
+            if (game.canAttack(point)) {
+                opponentBoard.validHint(point)
+            } else {
+                opponentBoard.invalidHint(point)
+            }
         }
     }
 
     override fun exit(point: Point) {
-        opponentBoard.removeHint(point)
+        if (!opponentAttacking) {
+            opponentBoard.removeHint(point)
+        }
     }
 
     override fun click(point: Point) {
-        if (game.canAttack(point)) {
+        if (!opponentAttacking && game.canAttack(point)) {
             val playerAttackResult = game.attack(point)
             when (playerAttackResult) {
                 AttackResult.HIT  -> {
@@ -78,8 +85,7 @@ class MatchController(private val player: Player,
                     opponentBoard.changeColor(point, CellColor.MISS)
                 }
                 AttackResult.SUNK -> {
-                    opponent.board
-                            .pointsOfShipIn(point)
+                    opponent.pointsOfShipIn(point)
                             .forEach { opponentBoard.changeColor(it, CellColor.SUNK) }
 
                     if (player.state == Player.State.WON) {
@@ -88,8 +94,9 @@ class MatchController(private val player: Player,
                 }
             }
 
-            if (game.attackingPlayer() == opponent) {
-                botAttack()
+            if (opponent.state == Player.State.ATTACKING) {
+                opponentAttacking = true
+                Thread({ botAttack() }).start()
             }
 
             logger.debug("Player: ${point} $playerAttackResult")

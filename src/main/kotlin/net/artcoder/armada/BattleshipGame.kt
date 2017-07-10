@@ -41,7 +41,7 @@ class BattleshipGame(private val playerOne: Player,
         return attackingPlayer().canAttack(waitingPlayer(), point)
     }
 
-    fun attackingPlayer(): Player {
+    private fun attackingPlayer(): Player {
         if (playerOne.state == ATTACKING) {
             return playerOne
         }
