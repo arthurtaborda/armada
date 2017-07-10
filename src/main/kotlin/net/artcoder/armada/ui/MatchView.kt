@@ -4,12 +4,11 @@ import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import net.artcoder.armada.Player
 
-class MatchView(playerOne: Player, playerTwo: Player) : VBox() {
+class MatchView(playerOne: Player, playerTwo: Player, gameResultAnnoucer: GameResultAnnoucer) : VBox() {
 
-    private val controller = MatchController(playerOne, playerTwo)
+    private val controller = MatchController(playerOne, playerTwo, gameResultAnnoucer)
 
     init {
-
         children.add(Label("You"))
         children.add(controller.playerBoard)
         children.add(Label("Opponent"))

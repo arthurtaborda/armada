@@ -3,6 +3,9 @@ package net.artcoder.armada.ui
 
 import javafx.application.Application
 import javafx.scene.Scene
+import javafx.scene.layout.VBox
+import javafx.scene.text.Text
+import javafx.stage.Modality
 import javafx.stage.Stage
 import net.artcoder.armada.Player
 
@@ -11,8 +14,7 @@ fun main(args: Array<String>) {
 }
 
 
-class ArmadaApp : Application(), GameStarter {
-
+class ArmadaApp : Application(), GameStarter, GameResultAnnoucer {
     var stage: Stage? = null
 
     override fun start(stage: Stage) {
@@ -22,8 +24,30 @@ class ArmadaApp : Application(), GameStarter {
     }
 
     override fun startGame(player: Player) {
-        stage?.scene = Scene(MatchView(player, RandomPlayer.create()))
+        stage?.scene = Scene(MatchView(player, RandomPlayer.create(), this))
         stage?.show()
+    }
+
+    override fun annouceLoser() {
+        val popup = Stage()
+        popup.initModality(Modality.APPLICATION_MODAL)
+        popup.initOwner(stage)
+        val dialogVbox = VBox()
+        dialogVbox.getChildren().add(Text ("You lost!"))
+        val dialogScene = Scene(dialogVbox, 300.0, 200.0)
+        popup.setScene(dialogScene)
+        popup.show()
+    }
+
+    override fun annouceWinner() {
+        val popup = Stage()
+        popup.initModality(Modality.APPLICATION_MODAL)
+        popup.initOwner(stage)
+        val dialogVbox = VBox()
+        dialogVbox.getChildren().add(Text("You won!"))
+        val dialogScene = Scene(dialogVbox, 300.0, 200.0)
+        popup.setScene(dialogScene)
+        popup.show()
     }
 
 }

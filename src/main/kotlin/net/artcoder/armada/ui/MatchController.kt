@@ -4,7 +4,9 @@ import net.artcoder.armada.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class MatchController(val player: Player, val opponent: Player) : PointClickHandler,
+class MatchController(private val player: Player,
+                      private val opponent: Player,
+                      private val gameResultAnnoucer: GameResultAnnoucer) : PointClickHandler,
                                                                   PointEnterHandler,
                                                                   PointExitHandler {
 
@@ -26,10 +28,31 @@ class MatchController(val player: Player, val opponent: Player) : PointClickHand
     private val bot = Bot(10, RandomPointGenerator(10))
 
 
-    fun botAttack(point: Point): AttackResult {
-        val botAttack = game.attack(point)
-        bot.reportAttack(point, botAttack)
-        return botAttack
+    fun botAttack() {
+        val botAttackPoint = bot.nextPoint()
+        val botAttackResult = game.attack(botAttackPoint)
+        logger.debug("Bot: $botAttackPoint $botAttackResult")
+
+        bot.reportAttack(botAttackPoint, botAttackResult)
+        when (botAttackResult) {
+            AttackResult.HIT  -> {
+                playerBoard.changeColor(botAttackPoint, CellColor.HIT)
+                botAttack()
+            }
+            AttackResult.MISS -> playerBoard.changeColor(botAttackPoint, CellColor.MISS)
+            AttackResult.SUNK -> {
+                player.board
+                        .pointsOfShipIn(botAttackPoint)
+                        .forEach { playerBoard.changeColor(it, CellColor.SUNK) }
+
+                if (opponent.state == Player.State.WON) {
+                    gameResultAnnoucer.annouceLoser()
+                } else {
+                    botAttack()
+                }
+            }
+        }
+
     }
 
     override fun enter(point: Point) {
@@ -58,23 +81,17 @@ class MatchController(val player: Player, val opponent: Player) : PointClickHand
                     opponent.board
                             .pointsOfShipIn(point)
                             .forEach { opponentBoard.changeColor(it, CellColor.SUNK) }
+
+                    if (player.state == Player.State.WON) {
+                        gameResultAnnoucer.annouceWinner()
+                    }
                 }
             }
 
             if (game.attackingPlayer() == opponent) {
-                val botAttackPoint = bot.nextPoint()
-                val botAttackResult = botAttack(botAttackPoint)
-                when (botAttackResult) {
-                    AttackResult.HIT  -> playerBoard.changeColor(botAttackPoint, CellColor.HIT)
-                    AttackResult.MISS -> playerBoard.changeColor(botAttackPoint, CellColor.MISS)
-                    AttackResult.SUNK -> {
-                        player.board
-                                .pointsOfShipIn(botAttackPoint)
-                                .forEach { playerBoard.changeColor(it, CellColor.SUNK) }
-                    }
-                }
-                logger.debug("Bot: $botAttackPoint $botAttackResult")
+                botAttack()
             }
+            
             logger.debug("Player: ${point} $playerAttackResult")
         }
     }
