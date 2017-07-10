@@ -12,16 +12,16 @@ class Player(val board: Board) {
         return opponent.receiveAttack(point)
     }
 
-    private fun receiveAttack(point: Point): AttackResult {
-        return board.attack(point)
-    }
-
     fun allShipsDestroyed(): Boolean {
         return board.allShipsDestroyed()
     }
 
     fun canAttack(opponent: Player, point: Point): Boolean {
         return !opponent.isAttacked(point)
+    }
+
+    private fun receiveAttack(point: Point): AttackResult {
+        return board.attack(point)
     }
 
     private fun isAttacked(point: Point): Boolean {

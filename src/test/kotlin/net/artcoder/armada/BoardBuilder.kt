@@ -10,8 +10,6 @@ class BoardBuilder {
     }
 
     fun build(): Board {
-        ships.map { it.first }
-                .toCollection(arrayListOf())
         val setupBoard = SetupBoard(10, ships.map { it.first }.toCollection(arrayListOf()))
         ships.forEach({ setupBoard.placeShip(it.second) })
         return setupBoard.finish()

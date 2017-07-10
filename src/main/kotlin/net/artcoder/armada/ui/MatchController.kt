@@ -15,10 +15,10 @@ class MatchController(val player: Player, val opponent: Player) : PointClickHand
                                 doNothingOnExit())
 
     val opponentBoard = BoardView(this, this, this)
-    
+
     init {
-        player.board.placedShips
-                .forEach { playerBoard.changeColor(it.points, CellColor.SHIP) }
+        player.board.pointsOfPlacedShips()
+                .forEach { playerBoard.changeColor(it, CellColor.SHIP) }
     }
 
     private val game = BattleshipGame(player, opponent)
@@ -48,27 +48,34 @@ class MatchController(val player: Player, val opponent: Player) : PointClickHand
         if (game.canAttack(point)) {
             val playerAttackResult = game.attack(point)
             when (playerAttackResult) {
-                AttackResult.HIT  -> opponentBoard.changeColor(point, CellColor.HIT)
-                AttackResult.MISS -> opponentBoard.changeColor(point, CellColor.MISS)
+                AttackResult.HIT  -> {
+                    opponentBoard.changeColor(point, CellColor.HIT)
+                }
+                AttackResult.MISS -> {
+                    opponentBoard.changeColor(point, CellColor.MISS)
+                }
                 AttackResult.SUNK -> {
                     opponent.board
                             .pointsOfShipIn(point)
                             .forEach { opponentBoard.changeColor(it, CellColor.SUNK) }
                 }
             }
-            val botAttackPoint = bot.nextPoint()
-            val botAttackResult = botAttack(botAttackPoint)
-            when (botAttackResult) {
-                AttackResult.HIT  -> playerBoard.changeColor(botAttackPoint, CellColor.HIT)
-                AttackResult.MISS -> playerBoard.changeColor(botAttackPoint, CellColor.MISS)
-                AttackResult.SUNK -> {
-                    player.board
-                            .pointsOfShipIn(botAttackPoint)
-                            .forEach { playerBoard.changeColor(it, CellColor.SUNK) }
+
+            if (game.attackingPlayer() == opponent) {
+                val botAttackPoint = bot.nextPoint()
+                val botAttackResult = botAttack(botAttackPoint)
+                when (botAttackResult) {
+                    AttackResult.HIT  -> playerBoard.changeColor(botAttackPoint, CellColor.HIT)
+                    AttackResult.MISS -> playerBoard.changeColor(botAttackPoint, CellColor.MISS)
+                    AttackResult.SUNK -> {
+                        player.board
+                                .pointsOfShipIn(botAttackPoint)
+                                .forEach { playerBoard.changeColor(it, CellColor.SUNK) }
+                    }
                 }
+                logger.debug("Bot: $botAttackPoint $botAttackResult")
             }
             logger.debug("Player: ${point} $playerAttackResult")
-            logger.debug("Bot: $botAttackPoint $botAttackResult")
         }
     }
 }

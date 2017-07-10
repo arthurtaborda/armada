@@ -1,7 +1,7 @@
 package net.artcoder.armada
 
 class Board(private val size: Int,
-            val placedShips: List<PlacedShip>) {
+            private val placedShips: List<PlacedShip>) {
 
     private val table = Array(size) { Array(size) { false } } //matrix of (size x size) with all false elements
     private val attacks = Array(size) { Array(size) { false } } //matrix of (size x size) with all false elements
@@ -35,6 +35,10 @@ class Board(private val size: Int,
 
     fun isAttacked(point: Point): Boolean {
         return attacks[point.x][point.y]
+    }
+
+    fun pointsOfPlacedShips(): List<Point> {
+        return placedShips.flatMap { it.points }.toList()
     }
 
     fun pointsOfShipIn(point: Point): List<Point> {

@@ -10,13 +10,6 @@ class BattleshipGame(private val playerOne: Player,
         playerTwo.state = WAITING
     }
 
-    private fun attackingPlayer(): Player {
-        if (playerOne.state == ATTACKING) {
-            return playerOne
-        }
-        return playerTwo
-    }
-
     private fun waitingPlayer(): Player {
         if (playerOne.state == WAITING) {
             return playerOne
@@ -28,18 +21,31 @@ class BattleshipGame(private val playerOne: Player,
         val attackResult = attackingPlayer().attack(waitingPlayer(), point)
 
         when (attackResult) {
-            AttackResult.HIT -> flipStatus()
+            AttackResult.HIT -> {
+                // continue attacking
+            }
             AttackResult.MISS -> flipStatus()
             AttackResult.SUNK -> {
                 if (waitingPlayer().allShipsDestroyed()) {
                     declareWinner()
-                } else {
-                    flipStatus()
                 }
+
+                // if didn't win, continue attacking
             }
         }
 
         return attackResult
+    }
+
+    fun canAttack(point: Point): Boolean {
+        return attackingPlayer().canAttack(waitingPlayer(), point)
+    }
+
+    fun attackingPlayer(): Player {
+        if (playerOne.state == ATTACKING) {
+            return playerOne
+        }
+        return playerTwo
     }
 
     private fun flipStatus() {
@@ -60,10 +66,6 @@ class BattleshipGame(private val playerOne: Player,
             playerOne.state = LOST
             playerTwo.state = WON
         }
-    }
-
-    fun canAttack(point: Point): Boolean {
-        return attackingPlayer().canAttack(waitingPlayer(), point)
     }
 
 }
