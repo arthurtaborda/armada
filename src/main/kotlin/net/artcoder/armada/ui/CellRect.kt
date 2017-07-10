@@ -1,8 +1,9 @@
 package net.artcoder.armada.ui
 
 import javafx.scene.shape.Rectangle
+import net.artcoder.armada.Point
 
-class CellRect : Rectangle() {
+class CellRect(val point: Point, val boardView: BoardView) : Rectangle() {
 
     var savedColor: CellColor = CellColor.WATER
 

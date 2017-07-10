@@ -2,39 +2,28 @@ package net.artcoder.armada.ui
 
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
-import net.artcoder.armada.Board
 import net.artcoder.armada.Point
-import tornadofx.*
 
-class BoardView() : View() {
+class BoardView(mouseClickedHandler: PointClickHandler,
+                mouseEnteredHandler: PointEnterHandler,
+                mouseExitedHandler: PointExitHandler) : VBox() {
 
-    constructor(board: Board) : this() {
-        board.placedShips
-                .forEach { changeColor(it.points, CellColor.SHIP) }
-    }
 
     val cells = mutableMapOf<Point, CellRect>()
-
-    override val root = VBox()
 
     init {
         for (y in 0 until 10) {
             val line = HBox()
-            root += line
             for (x in 0 until 10) {
-                val cell = CellRect()
-                cell.setOnMouseEntered {
-                    fire(MouseEnteredCellEvent(Point(x, y), this))
-                }
-                cell.setOnMouseExited {
-                    fire(MouseExitedCellEvent(Point(x, y), this))
-                }
-                cell.setOnMouseClicked {
-                    fire(MouseClickedCellEvent(Point(x, y), this))
-                }
-                cells[Point(x, y)] = cell
-                line += cell
+                val point = Point(x, y)
+                val cell = CellRect(point, this)
+                cell.setOnMouseClicked { mouseClickedHandler.click(point) }
+                cell.setOnMouseEntered { mouseEnteredHandler.enter(point) }
+                cell.setOnMouseExited { mouseExitedHandler.exit(point) }
+                cells[point] = cell
+                line.children.add(cell)
             }
+            children.add(line)
         }
     }
 
@@ -78,7 +67,3 @@ class BoardView() : View() {
         cells[point]!!.rollbackColor()
     }
 }
-
-class MouseEnteredCellEvent(val point: Point, val board: BoardView) : FXEvent()
-class MouseExitedCellEvent(val point: Point, val board: BoardView) : FXEvent()
-class MouseClickedCellEvent(val point: Point, val board: BoardView) : FXEvent()

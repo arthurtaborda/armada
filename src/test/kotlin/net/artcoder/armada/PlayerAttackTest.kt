@@ -9,8 +9,8 @@ import org.testng.annotations.Test
 class PlayerAttackTest {
 
     /*
-    when player 1 hits
-    player 1 is waiting and player 2 is attacking
+    when playerBoard 1 hits
+    playerBoard 1 is waiting and playerBoard 2 is attacking
      */
     @Test
     fun testPlayerOneHits() {
@@ -26,8 +26,8 @@ class PlayerAttackTest {
     }
 
     /*
-    when player 1 misses
-    player 1 is waiting and player 2 is attacking
+    when playerBoard 1 misses
+    playerBoard 1 is waiting and playerBoard 2 is attacking
      */
     @Test
     fun testPlayerOneMisses() {
@@ -43,8 +43,8 @@ class PlayerAttackTest {
     }
 
     /*
-    when player 1 sinks and not all ships from player 2 sunk
-    player 1 is waiting and player 2 is attacking
+    when playerBoard 1 sinks and not all ships from playerBoard 2 sunk
+    playerBoard 1 is waiting and playerBoard 2 is attacking
      */
     @Test
     fun testPlayerOneSinksOneButNotAll() {
@@ -62,8 +62,8 @@ class PlayerAttackTest {
     }
 
     /*
-    when player 1 sinks and all ships from player 2 sunk
-    player 1 wins
+    when playerBoard 1 sinks and all ships from playerBoard 2 sunk
+    playerBoard 1 wins
      */
     @Test
     fun testPlayerOneSinksAll() {
@@ -80,27 +80,27 @@ class PlayerAttackTest {
 
     /*
     when game starts
-    player 1 is attacking and player 2 is waiting
+    playerBoard 1 is attacking and playerBoard 2 is waiting
      */
 
     /*
-    when player 2 hits
-    player 2 is waiting and player 1 is attacking
+    when playerBoard 2 hits
+    playerBoard 2 is waiting and playerBoard 1 is attacking
      */
 
     /*
-    when player 2 misses
-    player 2 is waiting and player 1 is attacking
+    when playerBoard 2 misses
+    playerBoard 2 is waiting and playerBoard 1 is attacking
      */
 
     /*
-    when player 2 sinks and not all ships from player 1 sunk
-    player 2 is waiting and player 1 is attacking
+    when playerBoard 2 sinks and not all ships from playerBoard 1 sunk
+    playerBoard 2 is waiting and playerBoard 1 is attacking
      */
 
     /*
-    when player 2 sinks and all ships from player 1 sunk
-    player 2 wins
+    when playerBoard 2 sinks and all ships from playerBoard 1 sunk
+    playerBoard 2 wins
      */
 
     private fun destroyPlayerTwo(game: BattleshipGame): AttackResult {

@@ -9,7 +9,7 @@ class GameStartTest {
 
     /*
     when game starts
-    player 1 is attacking and player 2 is waiting
+    playerBoard 1 is attacking and playerBoard 2 is waiting
      */
     @Test
     fun testGameStart() {
