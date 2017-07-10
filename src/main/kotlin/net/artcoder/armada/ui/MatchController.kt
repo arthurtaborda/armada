@@ -6,11 +6,11 @@ import org.slf4j.LoggerFactory
 
 class MatchController(private val player: Player,
                       private val opponent: Player,
-                      private val gameResultAnnoucer: GameResultAnnoucer) : PointClickHandler,
-                                                                  PointEnterHandler,
-                                                                  PointExitHandler {
+                      private val gameResultAnnouncer: GameResultAnnouncer) : PointClickHandler,
+                                                                              PointEnterHandler,
+                                                                              PointExitHandler {
 
-    val logger: Logger = LoggerFactory.getLogger(MatchView::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(MatchView::class.java)
 
     val playerBoard = BoardView(doNothingOnClick(),
                                 doNothingOnEnter(),
@@ -19,7 +19,7 @@ class MatchController(private val player: Player,
     val opponentBoard = BoardView(this, this, this)
 
     init {
-        player.board.pointsOfPlacedShips()
+        player.pointsOfPlacedShips()
                 .forEach { playerBoard.changeColor(it, CellColor.SHIP) }
     }
 
@@ -28,7 +28,7 @@ class MatchController(private val player: Player,
     private val bot = Bot(10, RandomPointGenerator(10))
 
 
-    fun botAttack() {
+    private fun botAttack() {
         val botAttackPoint = bot.nextPoint()
         val botAttackResult = game.attack(botAttackPoint)
         logger.debug("Bot: $botAttackPoint $botAttackResult")
@@ -46,7 +46,7 @@ class MatchController(private val player: Player,
                         .forEach { playerBoard.changeColor(it, CellColor.SUNK) }
 
                 if (opponent.state == Player.State.WON) {
-                    gameResultAnnoucer.annouceLoser()
+                    gameResultAnnouncer.announceLoser()
                 } else {
                     botAttack()
                 }
@@ -83,7 +83,7 @@ class MatchController(private val player: Player,
                             .forEach { opponentBoard.changeColor(it, CellColor.SUNK) }
 
                     if (player.state == Player.State.WON) {
-                        gameResultAnnoucer.annouceWinner()
+                        gameResultAnnouncer.announceWinner()
                     }
                 }
             }
@@ -91,7 +91,7 @@ class MatchController(private val player: Player,
             if (game.attackingPlayer() == opponent) {
                 botAttack()
             }
-            
+
             logger.debug("Player: ${point} $playerAttackResult")
         }
     }

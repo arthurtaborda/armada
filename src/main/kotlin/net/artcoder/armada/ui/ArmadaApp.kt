@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
 }
 
 
-class ArmadaApp : Application(), GameStarter, GameResultAnnoucer {
+class ArmadaApp : Application(), GameStarter, GameResultAnnouncer {
     var stage: Stage? = null
 
     override fun start(stage: Stage) {
@@ -28,7 +28,7 @@ class ArmadaApp : Application(), GameStarter, GameResultAnnoucer {
         stage?.show()
     }
 
-    override fun annouceLoser() {
+    override fun announceLoser() {
         val popup = Stage()
         popup.initModality(Modality.APPLICATION_MODAL)
         popup.initOwner(stage)
@@ -39,7 +39,7 @@ class ArmadaApp : Application(), GameStarter, GameResultAnnoucer {
         popup.show()
     }
 
-    override fun annouceWinner() {
+    override fun announceWinner() {
         val popup = Stage()
         popup.initModality(Modality.APPLICATION_MODAL)
         popup.initOwner(stage)

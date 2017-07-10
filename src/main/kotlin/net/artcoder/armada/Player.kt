@@ -12,10 +12,6 @@ class Player(val board: Board) {
         return opponent.receiveAttack(point)
     }
 
-    fun allShipsDestroyed(): Boolean {
-        return board.allShipsDestroyed()
-    }
-
     fun canAttack(opponent: Player, point: Point): Boolean {
         return !opponent.isAttacked(point)
     }
