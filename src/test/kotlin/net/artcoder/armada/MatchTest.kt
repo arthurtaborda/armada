@@ -96,7 +96,7 @@ class MatchTest {
 
     private fun opponentBoard(): Board {
         // points: (0,8),(1,8),(0,9),(1,9),(2,9)
-        val setupBoard = SetupBoard(2, 3)
+        val setupBoard = SetupBoard(intArrayOf(2, 3))
         setupBoard.place(Point(0, 8))
         setupBoard.place(Point(0, 9))
 
@@ -105,7 +105,7 @@ class MatchTest {
 
     private fun playerBoard(): Board {
         // points: (0,0),(1,0),(0,1),(1,1),(2,1)
-        val setupBoard = SetupBoard(2, 3)
+        val setupBoard = SetupBoard(intArrayOf(2, 3))
         setupBoard.place(Point(0, 0))
         setupBoard.place(Point(0, 1))
 
