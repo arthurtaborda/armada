@@ -9,7 +9,11 @@ class MatchController(private val eventBus: EventBus,
 
     @Subscribe fun handle(event: MouseEnteredCellEvent) {
         if (event.board.name == "opponent") {
-            event.board.validHint(event.point)
+            if (match.canAttack(event.point)) {
+                event.board.validHint(event.point)
+            } else {
+                event.board.invalidHint(event.point)
+            }
         }
     }
 
@@ -22,8 +26,9 @@ class MatchController(private val eventBus: EventBus,
 
     @Subscribe fun handle(event: MouseClickedCellEvent) {
         if (event.board.name == "opponent") {
-            println("clicked")
-            match.attack(event.point)
+            if (match.canAttack(event.point)) {
+                match.attack(event.point)
+            }
         }
     }
 }

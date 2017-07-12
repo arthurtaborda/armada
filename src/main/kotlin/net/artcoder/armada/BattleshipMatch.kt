@@ -15,7 +15,10 @@ class BattleshipMatch(private val eventBus: EventBus,
             AttackResult.HIT -> hit(point)
             AttackResult.SUNK -> sunk(point)
         }
+    }
 
+    fun canAttack(point: Point): Boolean {
+        return getBoardToAttack().canAttack(point)
     }
 
     private fun sunk(point: Point) {

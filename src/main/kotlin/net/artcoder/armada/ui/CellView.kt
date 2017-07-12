@@ -31,24 +31,25 @@ class CellView : Rectangle() {
     }
 
     fun toShip() {
-        savedColor = CellColor.SHIP
-        fill = CellColor.SHIP.fill
-        stroke = CellColor.SHIP.stroke
+        changeColor(CellColor.SHIP)
     }
 
     fun toHit() {
-        fill = CellColor.HIT.fill
-        stroke = CellColor.HIT.stroke
+        changeColor(CellColor.HIT)
     }
 
     fun toMiss() {
-        fill = CellColor.MISS.fill
-        stroke = CellColor.MISS.stroke
+        changeColor(CellColor.MISS)
     }
 
     fun toSunk() {
-        fill = CellColor.SUNK.fill
-        stroke = CellColor.SUNK.stroke
+        changeColor(CellColor.SUNK)
+    }
+
+    private fun changeColor(cellColor: CellColor) {
+        savedColor = cellColor
+        fill = cellColor.fill
+        stroke = cellColor.stroke
     }
 }
 

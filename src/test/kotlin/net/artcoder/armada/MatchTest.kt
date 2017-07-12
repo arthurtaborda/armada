@@ -76,6 +76,17 @@ class MatchTest {
         assertThat(eventBus.contains(OpponentSunkEvent(listOf(Point(0, 0), Point(1, 0))))).isTrue()
     }
 
+    @Test
+    fun cannotAttackAlreadyAttackedPoint() {
+        val match = match()
+        match.attack(Point(0, 8)) //player one hits
+
+        assertThat(match.canAttack(Point(1, 2))).isTrue()
+        assertThat(match.canAttack(Point(9, 9))).isTrue()
+        assertThat(match.canAttack(Point(4, 7))).isTrue()
+        assertThat(match.canAttack(Point(0, 8))).isFalse()
+    }
+
     private fun match(): BattleshipMatch {
         val playerBoard = playerBoard()
         val opponentBoard = opponentBoard()
