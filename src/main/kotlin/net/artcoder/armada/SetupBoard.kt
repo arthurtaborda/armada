@@ -16,7 +16,7 @@ class SetupBoard(vararg ships: Int) {
         get() = shipsInHold.firstOrNull()
 
     private var isHorizontal = true
-    private val pointsWithPlacedShips = mutableListOf<Point>()
+    private val placedShips = mutableListOf<PlacedShip>()
 
     fun nextPlacingPoints(point: Point): PlacingPoints {
         val points = mutableListOf<Point>()
@@ -59,13 +59,17 @@ class SetupBoard(vararg ships: Int) {
             shipsInHold.removeAt(0)
         }
 
-        pointsWithPlacedShips.addAll(placingPoints.points)
+        placedShips.add(PlacedShip(placingPoints.points))
 
         return placingPoints.points
     }
 
     private fun overlapPlacedBoard(point: Point): Boolean {
-        return pointsWithPlacedShips.contains(point)
+        return placedShips.any { it.points.contains(point) }
+    }
+
+    fun finish(): Board {
+        return Board(placedShips)
     }
 }
 

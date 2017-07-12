@@ -2,8 +2,10 @@ package net.artcoder.armada.ui
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import net.artcoder.armada.BattleshipMatch
 
-class MatchController(eventBus: EventBus) {
+class MatchController(private val eventBus: EventBus,
+                      private val match: BattleshipMatch) {
 
     @Subscribe fun handle(event: MouseEnteredCellEvent) {
         if (event.board.name == "opponent") {
@@ -18,8 +20,10 @@ class MatchController(eventBus: EventBus) {
         }
     }
 
-
     @Subscribe fun handle(event: MouseClickedCellEvent) {
-        println("click-${event.board.name}")
+        if (event.board.name == "opponent") {
+            println("clicked")
+            match.attack(event.point)
+        }
     }
 }

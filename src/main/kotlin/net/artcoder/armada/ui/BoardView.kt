@@ -50,6 +50,20 @@ class BoardView(val name: String, eventBus: EventBus) : VBox() {
         }
     }
 
+    fun sunk(points: List<Point>) {
+        for (point in points) {
+            cells[point]!!.toSunk()
+        }
+    }
+
+    fun hit(point: Point) {
+        cells[point]!!.toHit()
+    }
+
+    fun miss(point: Point) {
+        cells[point]!!.toMiss()
+    }
+
     fun invalidHint(point: Point) {
         cells[point]!!.toHintInvalid()
     }

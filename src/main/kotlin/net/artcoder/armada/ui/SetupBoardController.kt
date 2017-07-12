@@ -3,6 +3,7 @@ package net.artcoder.armada.ui
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import net.artcoder.armada.SetupBoard
+import net.artcoder.armada.Board
 
 
 class SetupBoardController(private val eventBus: EventBus) {
@@ -37,9 +38,9 @@ class SetupBoardController(private val eventBus: EventBus) {
     }
 
     fun start() {
-        eventBus.post(GameStartedEvent())
+        eventBus.post(GameStartedEvent(setupBoard.finish()))
     }
 }
 
 class CanStartGameEvent
-class GameStartedEvent
+data class GameStartedEvent(val board: Board)

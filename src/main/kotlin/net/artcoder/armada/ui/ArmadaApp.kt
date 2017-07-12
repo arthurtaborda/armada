@@ -5,6 +5,7 @@ import com.google.common.eventbus.Subscribe
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
+import net.artcoder.armada.BattleshipMatch
 
 fun main(args: Array<String>) {
     Application.launch(ArmadaApp::class.java, *args)
@@ -25,7 +26,8 @@ class ArmadaApp : Application() {
 
     @Subscribe
     fun handle(event: GameStartedEvent) {
-        stage?.scene = Scene(MatchView(eventBus))
+        val match = BattleshipMatch(eventBus, event.board, event.board)
+        stage?.scene = Scene(MatchView(eventBus, match))
         stage?.show()
     }
 }
