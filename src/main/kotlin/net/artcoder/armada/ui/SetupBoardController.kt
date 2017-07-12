@@ -2,13 +2,12 @@ package net.artcoder.armada.ui
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import net.artcoder.armada.SetupBoard
 import net.artcoder.armada.Board
+import net.artcoder.armada.SetupBoard
 
 
-class SetupBoardController(private val eventBus: EventBus) {
-
-    private val setupBoard = SetupBoard(2, 2, 3, 3, 4, 5)
+class SetupBoardController(private val eventBus: EventBus,
+                           private val setupBoard: SetupBoard) {
 
     @Subscribe fun handle(event: MouseEnteredCellEvent) {
         val placingPoints = setupBoard.nextPlacingPoints(event.point)

@@ -1,6 +1,6 @@
 package net.artcoder.armada
 
-class SetupBoard(vararg ships: Int) {
+class SetupBoard(ships: IntArray) {
 
     private val boardSize = 10
 
@@ -9,13 +9,13 @@ class SetupBoard(vararg ships: Int) {
             return shipsInHold.isEmpty()
         }
 
-    private val shipsInHold = ships.sorted().toMutableList()
 
+    private val shipsInHold = ships.sorted().toMutableList()
 
     private val nextShipToPlace: Int?
         get() = shipsInHold.firstOrNull()
-
     private var isHorizontal = true
+
     private val placedShips = mutableListOf<PlacedShip>()
 
     fun nextPlacingPoints(point: Point): PlacingPoints {
@@ -62,6 +62,24 @@ class SetupBoard(vararg ships: Int) {
         placedShips.add(PlacedShip(placingPoints.points))
 
         return placingPoints.points
+    }
+
+    fun canPlace(point: Point): Boolean {
+        nextShipToPlace?.let {
+            for (i in 0 until it) {
+                if (isHorizontal) {
+                    if (point.x >= boardSize) {
+                        return false
+                    }
+                } else {
+                    if (point.y >= boardSize) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return !overlapPlacedBoard(point)
     }
 
     private fun overlapPlacedBoard(point: Point): Boolean {

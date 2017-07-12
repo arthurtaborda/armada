@@ -6,11 +6,11 @@ import org.junit.Test
 
 class SetupBoardTest {
 
-    private var board: SetupBoard = SetupBoard(2, 2, 3, 3, 4, 5)
+    private var board: SetupBoard = SetupBoard(intArrayOf(2, 2, 3, 3, 4, 5))
 
     @Before
     fun setUp() {
-        board = SetupBoard(2, 2, 3, 3, 4, 5)
+        board = SetupBoard(intArrayOf(2, 2, 3, 3, 4, 5))
     }
 
     @Test
