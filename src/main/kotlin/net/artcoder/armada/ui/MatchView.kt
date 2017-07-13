@@ -24,32 +24,26 @@ class MatchView(eventBus: EventBus, match: SinglePlayMatch) : VBox() {
     }
 
     @Subscribe fun handle(event: PlayerMissEvent) {
-        println("player-miss")
         opponentBoardView.miss(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: PlayerHitEvent) {
-        println("player-hit")
         opponentBoardView.hit(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: PlayerSunkEvent) {
-        println("player-sunk")
         opponentBoardView.sunk(event.points)
     }
 
     @Subscribe fun handle(event: OpponentMissEvent) {
-        println("opponent-miss")
         playerBoardView.miss(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: OpponentHitEvent) {
-        println("opponent-hit")
         playerBoardView.hit(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: OpponentSunkEvent) {
-        println("opponent-sunk")
         playerBoardView.sunk(event.points)
     }
 }

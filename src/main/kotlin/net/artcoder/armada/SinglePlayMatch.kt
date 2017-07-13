@@ -2,11 +2,15 @@ package net.artcoder.armada
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
 class SinglePlayMatch(private val eventBus: EventBus,
                       private val playerBoard: Board,
                       private val botBoard: Board,
                       private val bot: Bot) {
+
+    private val botDelay = 500L
 
     private val game = BattleshipGame(eventBus, playerBoard, botBoard)
 
@@ -20,7 +24,7 @@ class SinglePlayMatch(private val eventBus: EventBus,
     }
 
     @Subscribe fun handle(event: PlayerMissEvent) {
-        game.attack(bot.nextPoint())
+        botAttack()
     }
 
     @Subscribe fun handle(event: OpponentMissEvent) {
@@ -29,11 +33,20 @@ class SinglePlayMatch(private val eventBus: EventBus,
 
     @Subscribe fun handle(event: OpponentHitEvent) {
         bot.reportAttack(event.pointAttacked, AttackResult.HIT)
-        game.attack(bot.nextPoint())
+        botAttack()
     }
 
     @Subscribe fun handle(event: OpponentSunkEvent) {
         bot.reportAttack(event.pointAttacked, AttackResult.SUNK)
-        game.attack(bot.nextPoint())
+        botAttack()
+    }
+
+    private fun botAttack() {
+        CompletableFuture.supplyAsync(
+                {
+                    TimeUnit.MILLISECONDS.sleep(botDelay)
+
+                    game.attack(bot.nextPoint())
+                })
     }
 }
