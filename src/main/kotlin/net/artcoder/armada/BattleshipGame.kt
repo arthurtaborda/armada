@@ -20,8 +20,14 @@ class BattleshipGame(private val eventBus: EventBus,
     private fun sunk(point: Point) {
         if (isPlayersTurn) {
             eventBus.post(PlayerSunkEvent(point, opponentBoard.pointsOfShipIn(point)))
+            if(opponentBoard.allShipsDestroyed()) {
+                eventBus.post(PlayerWonEvent(point))
+            }
         } else {
             eventBus.post(OpponentSunkEvent(point, playerBoard.pointsOfShipIn(point)))
+            if (playerBoard.allShipsDestroyed()) {
+                eventBus.post(OpponentWonEvent(point))
+            }
         }
     }
 
@@ -57,10 +63,12 @@ class BattleshipGame(private val eventBus: EventBus,
 
 }
 
+data class PlayerWonEvent(val pointAttacked: Point)
 data class PlayerMissEvent(val pointAttacked: Point)
 data class PlayerHitEvent(val pointAttacked: Point)
 data class PlayerSunkEvent(val pointAttacked: Point, val points: List<Point>)
 
+data class OpponentWonEvent(val pointAttacked: Point)
 data class OpponentMissEvent(val pointAttacked: Point)
 data class OpponentHitEvent(val pointAttacked: Point)
 data class OpponentSunkEvent(val pointAttacked: Point, val points: List<Point>)

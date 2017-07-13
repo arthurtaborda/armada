@@ -1,8 +1,8 @@
 package net.artcoder.armada
 
-import net.artcoder.armada.Bot.CellState.*
-import net.artcoder.armada.Bot.DestructionDirection.*
-import net.artcoder.armada.Bot.State.*
+import net.artcoder.armada.SmartBot.CellState.*
+import net.artcoder.armada.SmartBot.DestructionDirection.*
+import net.artcoder.armada.SmartBot.State.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -10,10 +10,22 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
 
     val log: Logger = LoggerFactory.getLogger(SmartBot::class.java)
 
+    enum class State {
+        SEARCH, TARGET, DESTROY
+    }
+
+    enum class DestructionDirection {
+        UP, RIGHT, LEFT, DOWN
+    }
+
+    enum class CellState {
+        NOT_ATTACKED, MISS, HIT
+    }
+
     private val boardSize = 10
 
     private var state = SEARCH
-    private var destructionDirection: Bot.DestructionDirection? = null
+    private var destructionDirection: DestructionDirection? = null
     private var targetPoint: Point? = null
     private var nextPointToAttack: Point? = null
     private val table = Array(boardSize) { Array(boardSize) { NOT_ATTACKED } } // matrix of (size x size) with all false elements
@@ -33,22 +45,22 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
 
     override fun reportAttack(attackPoint: Point, attackResult: AttackResult) {
         if (attackResult == AttackResult.HIT) {
-            table[attackPoint.x][attackPoint.y] = Bot.CellState.HIT
+            table[attackPoint.x][attackPoint.y] = HIT
 
             when (state) {
-                Bot.State.SEARCH  -> {
+                SEARCH  -> {
                     log.debug("Bot: SEARCH to TARGET")
                     state = TARGET
                     targetPoint = attackPoint
                     nextPointToAttack = getNextPossibleTargetPoint(attackPoint)
                 }
-                Bot.State.TARGET  -> {
+                TARGET  -> {
                     log.debug("Bot: TARGET to DESTROY")
                     state = DESTROY
                     targetPoint = null
                     nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
                 }
-                Bot.State.DESTROY -> {
+                DESTROY -> {
                     log.debug("Bot: continue to DESTROY")
                     nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
                 }

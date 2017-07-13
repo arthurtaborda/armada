@@ -26,6 +26,10 @@ class Board(private val placedShips: List<PlacedShip>) {
                 .toList()
     }
 
+    fun allShipsDestroyed(): Boolean {
+        return placedShips.stream().allMatch { it.isDead() }
+    }
+
     fun canAttack(point: Point): Boolean {
         return !attackedPoints.contains(point)
     }
