@@ -1,13 +1,11 @@
 package net.artcoder.armada.ui
 
-import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import net.artcoder.armada.OpponentMissEvent
 import net.artcoder.armada.PlayerMissEvent
 import net.artcoder.armada.SinglePlayMatch
 
-class MatchController(private val eventBus: EventBus,
-                      private val match: SinglePlayMatch) {
+class MatchController(private val match: SinglePlayMatch) {
 
     private var playerTurn = true
 

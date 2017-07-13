@@ -2,11 +2,11 @@ package net.artcoder.armada
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.CompletableFuture.supplyAsync
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
-class SinglePlayMatch(private val eventBus: EventBus,
-                      private val playerBoard: Board,
+class SinglePlayMatch(eventBus: EventBus,
+                      playerBoard: Board,
                       private val botBoard: Board,
                       private val bot: Bot) {
 
@@ -42,11 +42,10 @@ class SinglePlayMatch(private val eventBus: EventBus,
     }
 
     private fun botAttack() {
-        CompletableFuture.supplyAsync(
-                {
-                    TimeUnit.MILLISECONDS.sleep(botDelay)
+        supplyAsync({
+                        MILLISECONDS.sleep(botDelay)
 
-                    game.attack(bot.nextPoint())
-                })
+                        game.attack(bot.nextPoint())
+                    })
     }
 }

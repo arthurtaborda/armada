@@ -1,8 +1,10 @@
 package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
+import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.TimeUnit.SECONDS
 
 class SinglePlayMatchTest {
 
@@ -33,6 +35,10 @@ class SinglePlayMatchTest {
         val match = match()
         match.attack(Point(0, 3)) //player one misses
 
+        await().timeout(3, SECONDS).until {
+            eventBus.contains(OpponentMissEvent(Point(5, 7)))
+        }
+
         assertThat(eventBus.postCount(PlayerMissEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(PlayerMissEvent(Point(0, 3)))).isTrue()
         assertThat(eventBus.postCount(OpponentMissEvent::class)).isEqualTo(1)
@@ -47,6 +53,10 @@ class SinglePlayMatchTest {
 
         val match = match()
         match.attack(Point(0, 3)) //player one misses
+
+        await().timeout(3, SECONDS).until {
+            eventBus.contains(OpponentMissEvent(Point(5, 7)))
+        }
 
         assertThat(eventBus.postCount(PlayerMissEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(PlayerMissEvent(Point(0, 3)))).isTrue()
@@ -65,6 +75,10 @@ class SinglePlayMatchTest {
 
         val match = match()
         match.attack(Point(0, 3)) //player one misses
+
+        await().timeout(3, SECONDS).until {
+            eventBus.contains(OpponentMissEvent(Point(5, 7)))
+        }
 
         assertThat(eventBus.postCount(PlayerMissEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(PlayerMissEvent(Point(0, 3)))).isTrue()

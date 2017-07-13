@@ -8,7 +8,7 @@ import net.artcoder.armada.*
 
 class MatchView(eventBus: EventBus, match: SinglePlayMatch) : VBox() {
 
-    private val controller = MatchController(eventBus, match)
+    private val controller = MatchController(match)
 
     private val playerBoardView = BoardView("player", eventBus)
     private val opponentBoardView = BoardView("opponent", eventBus)
