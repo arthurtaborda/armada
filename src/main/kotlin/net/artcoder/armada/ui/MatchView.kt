@@ -25,12 +25,12 @@ class MatchView(eventBus: EventBus, match: SinglePlayMatch) : VBox() {
 
     @Subscribe fun handle(event: PlayerMissEvent) {
         println("player-miss")
-        opponentBoardView.miss(event.point)
+        opponentBoardView.miss(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: PlayerHitEvent) {
         println("player-hit")
-        opponentBoardView.hit(event.point)
+        opponentBoardView.hit(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: PlayerSunkEvent) {
@@ -40,12 +40,12 @@ class MatchView(eventBus: EventBus, match: SinglePlayMatch) : VBox() {
 
     @Subscribe fun handle(event: OpponentMissEvent) {
         println("opponent-miss")
-        playerBoardView.miss(event.point)
+        playerBoardView.miss(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: OpponentHitEvent) {
         println("opponent-hit")
-        playerBoardView.hit(event.point)
+        playerBoardView.hit(event.pointAttacked)
     }
 
     @Subscribe fun handle(event: OpponentSunkEvent) {

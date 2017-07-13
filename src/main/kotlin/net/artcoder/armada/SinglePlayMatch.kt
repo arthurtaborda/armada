@@ -1,6 +1,7 @@
 package net.artcoder.armada
 
 import com.google.common.eventbus.EventBus
+import com.google.common.eventbus.Subscribe
 
 class SinglePlayMatch(private val eventBus: EventBus,
                       private val playerBoard: Board,
@@ -16,5 +17,23 @@ class SinglePlayMatch(private val eventBus: EventBus,
 
     fun canAttack(point: Point): Boolean {
         return botBoard.canAttack(point)
+    }
+
+    @Subscribe fun handle(event: PlayerMissEvent) {
+        game.attack(bot.nextPoint())
+    }
+
+    @Subscribe fun handle(event: OpponentMissEvent) {
+        bot.reportAttack(event.pointAttacked, AttackResult.MISS)
+    }
+
+    @Subscribe fun handle(event: OpponentHitEvent) {
+        bot.reportAttack(event.pointAttacked, AttackResult.HIT)
+        game.attack(bot.nextPoint())
+    }
+
+    @Subscribe fun handle(event: OpponentSunkEvent) {
+        bot.reportAttack(event.pointAttacked, AttackResult.SUNK)
+        game.attack(bot.nextPoint())
     }
 }

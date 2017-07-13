@@ -17,15 +17,11 @@ class BattleshipGame(private val eventBus: EventBus,
         }
     }
 
-    fun canAttack(point: Point): Boolean {
-        return getBoardToAttack().canAttack(point)
-    }
-
     private fun sunk(point: Point) {
         if (isPlayersTurn) {
-            eventBus.post(PlayerSunkEvent(opponentBoard.pointsOfShipIn(point)))
+            eventBus.post(PlayerSunkEvent(point, opponentBoard.pointsOfShipIn(point)))
         } else {
-            eventBus.post(OpponentSunkEvent(playerBoard.pointsOfShipIn(point)))
+            eventBus.post(OpponentSunkEvent(point, playerBoard.pointsOfShipIn(point)))
         }
     }
 
@@ -39,11 +35,12 @@ class BattleshipGame(private val eventBus: EventBus,
 
     private fun miss(point: Point) {
         if (isPlayersTurn) {
+            flipTurn()
             eventBus.post(PlayerMissEvent(point))
         } else {
+            flipTurn()
             eventBus.post(OpponentMissEvent(point))
         }
-        flipTurn()
     }
 
     private fun getBoardToAttack(): Board {
@@ -60,10 +57,10 @@ class BattleshipGame(private val eventBus: EventBus,
 
 }
 
-data class PlayerMissEvent(val point: Point)
-data class PlayerHitEvent(val point: Point)
-data class PlayerSunkEvent(val points: List<Point>)
+data class PlayerMissEvent(val pointAttacked: Point)
+data class PlayerHitEvent(val pointAttacked: Point)
+data class PlayerSunkEvent(val pointAttacked: Point, val points: List<Point>)
 
-data class OpponentMissEvent(val point: Point)
-data class OpponentHitEvent(val point: Point)
-data class OpponentSunkEvent(val points: List<Point>)
+data class OpponentMissEvent(val pointAttacked: Point)
+data class OpponentHitEvent(val pointAttacked: Point)
+data class OpponentSunkEvent(val pointAttacked: Point, val points: List<Point>)

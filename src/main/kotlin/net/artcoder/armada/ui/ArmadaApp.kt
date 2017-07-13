@@ -34,6 +34,7 @@ class ArmadaApp : Application() {
         val botBoard = BoardGenerator(ships, pointGenerator).randomBoard()
         val bot = SmartBot(pointGenerator)
         val match = SinglePlayMatch(eventBus, event.board, botBoard, bot)
+        eventBus.register(match)
         stage?.scene = Scene(MatchView(eventBus, match))
         stage?.show()
     }

@@ -62,7 +62,7 @@ class BattleshipGameTest {
         game.attack(Point(1, 8)) //player one hits
 
         assertThat(eventBus.postCount(PlayerSunkEvent::class)).isEqualTo(1)
-        assertThat(eventBus.contains(PlayerSunkEvent(listOf(Point (0, 8), Point(1, 8))))).isTrue()
+        assertThat(eventBus.contains(PlayerSunkEvent(Point(1, 8), listOf(Point (0, 8), Point(1, 8))))).isTrue()
     }
 
     @Test
@@ -73,18 +73,7 @@ class BattleshipGameTest {
         game.attack(Point(1, 0)) //player two hits
 
         assertThat(eventBus.postCount(OpponentSunkEvent::class)).isEqualTo(1)
-        assertThat(eventBus.contains(OpponentSunkEvent(listOf(Point(0, 0), Point(1, 0))))).isTrue()
-    }
-
-    @Test
-    fun cannotAttackAlreadyAttackedPoint() {
-        val game = game()
-        game.attack(Point(0, 8)) //player one hits
-
-        assertThat(game.canAttack(Point(1, 2))).isTrue()
-        assertThat(game.canAttack(Point(9, 9))).isTrue()
-        assertThat(game.canAttack(Point(4, 7))).isTrue()
-        assertThat(game.canAttack(Point(0, 8))).isFalse()
+        assertThat(eventBus.contains(OpponentSunkEvent(Point(1, 0), listOf(Point(0, 0), Point(1, 0))))).isTrue()
     }
 
     private fun game(): BattleshipGame {
