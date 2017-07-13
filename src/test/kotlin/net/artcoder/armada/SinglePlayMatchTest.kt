@@ -10,13 +10,13 @@ import java.util.concurrent.TimeUnit.SECONDS
 
 class SinglePlayMatchTest {
 
-    private var bot = BotMock()
     private var eventBus = EventBusSpy()
+    private var bot = BotMock(eventBus)
 
     @Before
     fun setUp() {
-        bot = BotMock()
         eventBus = EventBusSpy()
+        bot = BotMock(eventBus)
     }
 
     @Test

@@ -29,17 +29,11 @@ class SinglePlayMatch(eventBus: EventBus,
         botAttack()
     }
 
-    @Subscribe fun handle(event: OpponentMissEvent) {
-        bot.reportAttack(event.pointAttacked, AttackResult.MISS)
-    }
-
     @Subscribe fun handle(event: OpponentHitEvent) {
-        bot.reportAttack(event.pointAttacked, AttackResult.HIT)
         botAttack()
     }
 
     @Subscribe fun handle(event: OpponentSunkEvent) {
-        bot.reportAttack(event.pointAttacked, AttackResult.SUNK)
         botAttack()
     }
 

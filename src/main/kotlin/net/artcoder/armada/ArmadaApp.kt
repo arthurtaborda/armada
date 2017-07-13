@@ -52,6 +52,7 @@ class ArmadaApp : Application() {
         eventBus.register(match)
         eventBus.register(controller)
         eventBus.register(matchView)
+        eventBus.register(bot)
 
         stage.scene = Scene(matchView)
         stage.show()

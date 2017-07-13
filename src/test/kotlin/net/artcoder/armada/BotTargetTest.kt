@@ -2,12 +2,20 @@ package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
 import net.artcoder.armada.core.Point
-import net.artcoder.armada.match.AttackResult.*
+import org.junit.Before
 import org.junit.Test
 
 class BotTargetTest {
 
-    private fun bot() = BotMock()
+    private var eventBus = EventBusSpy()
+    private var bot = BotMock(eventBus)
+
+    @Before
+    fun setUp() {
+        eventBus = EventBusSpy()
+        bot = BotMock(eventBus)
+        eventBus.register(bot)
+    }
 
     /*
     when attack hits
@@ -15,11 +23,10 @@ class BotTargetTest {
      */
     @Test
     fun testAttackHitsRight() {
-        val bot = bot()
         bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
-        bot.reportAttack(point, HIT)
+        bot.reportHit(point)
 
         val nextAttack = bot.nextPoint()
         assertThat(bot.randomCount).isEqualTo(1)
@@ -32,11 +39,10 @@ class BotTargetTest {
      */
     @Test
     fun testAttackHitsOnRightEdge() {
-        val bot = bot()
         bot.putRandomPoint(Point(9, 3))
 
         val point = bot.nextPoint()
-        bot.reportAttack(point, HIT)
+        bot.reportHit(point)
 
         val nextAttack = bot.nextPoint()
         assertThat(bot.randomCount).isEqualTo(1)
@@ -49,12 +55,11 @@ class BotTargetTest {
      */
     @Test
     fun testAttackHitsDown() {
-        val bot = bot()
         bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
-        bot.reportAttack(point.right(), MISS)
-        bot.reportAttack(point, HIT)
+        bot.reportMiss(point.right())
+        bot.reportHit(point)
 
         val nextAttack = bot.nextPoint()
         assertThat(bot.randomCount).isEqualTo(1)
@@ -67,12 +72,11 @@ class BotTargetTest {
      */
     @Test
     fun testAttackHitsOnBottomEdge() {
-        val bot = bot()
         bot.putRandomPoint(Point(3, 9))
 
         val point = bot.nextPoint()
-        bot.reportAttack(point.right(), MISS)
-        bot.reportAttack(point, HIT)
+        bot.reportMiss(point.right())
+        bot.reportHit(point)
 
         val nextAttack = bot.nextPoint()
         assertThat(bot.randomCount).isEqualTo(1)
@@ -85,13 +89,12 @@ class BotTargetTest {
      */
     @Test
     fun testAttackHitsLeft() {
-        val bot = bot()
         bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
-        bot.reportAttack(point.right(), MISS)
-        bot.reportAttack(point.down(), MISS)
-        bot.reportAttack(point, HIT)
+        bot.reportMiss(point.right())
+        bot.reportMiss(point.down())
+        bot.reportHit(point)
 
         val nextAttack = bot.nextPoint()
         assertThat(bot.randomCount).isEqualTo(1)
@@ -104,13 +107,12 @@ class BotTargetTest {
      */
     @Test
     fun testAttackHitsOnLeftEdge() {
-        val bot = bot()
         bot.putRandomPoint(Point(0, 3))
 
         val point = bot.nextPoint()
-        bot.reportAttack(point.right(), MISS)
-        bot.reportAttack(point.down(), MISS)
-        bot.reportAttack(point, HIT)
+        bot.reportMiss(point.right())
+        bot.reportMiss(point.down())
+        bot.reportHit(point)
 
         val nextAttack = bot.nextPoint()
         assertThat(bot.randomCount).isEqualTo(1)
@@ -123,14 +125,13 @@ class BotTargetTest {
      */
     @Test
     fun testAttackHitsUp() {
-        val bot = bot()
         bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
-        bot.reportAttack(point.left(), MISS)
-        bot.reportAttack(point.right(), MISS)
-        bot.reportAttack(point.down(), MISS)
-        bot.reportAttack(point, HIT)
+        bot.reportMiss(point.left())
+        bot.reportMiss(point.right())
+        bot.reportMiss(point.down())
+        bot.reportHit(point)
 
         val nextAttack = bot.nextPoint()
         assertThat(bot.randomCount).isEqualTo(1)

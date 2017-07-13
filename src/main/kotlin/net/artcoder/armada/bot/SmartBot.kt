@@ -1,12 +1,16 @@
 package net.artcoder.armada.bot
 
+import com.google.common.eventbus.Subscribe
 import net.artcoder.armada.bot.SmartBot.CellState.*
 import net.artcoder.armada.bot.SmartBot.DestructionDirection.*
 import net.artcoder.armada.bot.SmartBot.State.*
 import net.artcoder.armada.core.Point
-import net.artcoder.armada.match.AttackResult
+import net.artcoder.armada.match.OpponentHitEvent
+import net.artcoder.armada.match.OpponentMissEvent
+import net.artcoder.armada.match.OpponentSunkEvent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.*
 
 open class SmartBot(private val pointGenerator: PointGenerator): Bot {
 
@@ -31,6 +35,9 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
     private var targetPoint: Point? = null
     private var nextPointToAttack: Point? = null
     private val table = Array(boardSize) { Array(boardSize) { NOT_ATTACKED } } // matrix of (size x size) with all false elements
+    private val hitsNotSunk = LinkedList<Point>()
+
+    private fun cellState(point: Point) = table[point.x][point.y]
 
     override fun nextPoint(): Point {
         if (nextPointToAttack != null) {
@@ -45,42 +52,51 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
         }
     }
 
-    override fun reportAttack(attackPoint: Point, attackResult: AttackResult) {
-        if (attackResult == AttackResult.HIT) {
-            table[attackPoint.x][attackPoint.y] = HIT
+    @Subscribe fun handle(event: OpponentMissEvent) {
+        table[event.pointAttacked.x][event.pointAttacked.y] = MISS
+        if (state == DESTROY) {
+            log.debug("Bot: DESTROY MISS")
+            changeDestructionDirection(event.pointAttacked)
+        }
+        if (state == TARGET) {
+            log.debug("Bot: TARGET MISS")
+            nextPointToAttack = getNextPossibleTargetPoint(targetPoint!!)
+        }
+    }
 
-            when (state) {
-                SEARCH  -> {
-                    log.debug("Bot: SEARCH to TARGET")
-                    state = TARGET
-                    targetPoint = attackPoint
-                    nextPointToAttack = getNextPossibleTargetPoint(attackPoint)
-                }
-                TARGET  -> {
-                    log.debug("Bot: TARGET to DESTROY")
-                    state = DESTROY
-                    targetPoint = null
-                    nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
-                }
-                DESTROY -> {
-                    log.debug("Bot: continue to DESTROY")
-                    nextPointToAttack = getNextPossibleDestructionPoint(attackPoint)
-                }
+    @Subscribe fun handle(event: OpponentHitEvent) {
+        table[event.pointAttacked.x][event.pointAttacked.y] = HIT
+        hitsNotSunk.add(event.pointAttacked)
+
+        when (state) {
+            SEARCH  -> {
+                log.debug("Bot: SEARCH to TARGET")
+                state = TARGET
+                targetPoint = event.pointAttacked
+                nextPointToAttack = getNextPossibleTargetPoint(event.pointAttacked)
             }
-        } else if (attackResult == AttackResult.MISS) {
-            table[attackPoint.x][attackPoint.y] = MISS
-            if (state == DESTROY) {
-                log.debug("Bot: DESTROY MISS")
-                changeDestructionDirection(attackPoint)
+            TARGET  -> {
+                log.debug("Bot: TARGET to DESTROY")
+                state = DESTROY
+                targetPoint = null
+                nextPointToAttack = getNextPossibleDestructionPoint(event.pointAttacked)
             }
-            if (state == TARGET) {
-                log.debug("Bot: TARGET MISS")
-                nextPointToAttack = getNextPossibleTargetPoint(targetPoint!!)
+            DESTROY -> {
+                log.debug("Bot: continue to DESTROY")
+                nextPointToAttack = getNextPossibleDestructionPoint(event.pointAttacked)
             }
-        } else if (attackResult == AttackResult.SUNK) {
+        }
+    }
+
+    @Subscribe fun handle(event: OpponentSunkEvent) {
+        log.debug("Bot: SUNK")
+        table[event.pointAttacked.x][event.pointAttacked.y] = HIT
+        hitsNotSunk.removeAll(event.points)
+        if(hitsNotSunk.isNotEmpty()) {
+            state = DESTROY
+            nextPointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first)
+        } else {
             state = SEARCH
-            log.debug("Bot: SUNK")
-            table[attackPoint.x][attackPoint.y] = HIT
             nextPointToAttack = null
         }
     }
@@ -90,7 +106,7 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
             UP -> nextPointToAttack = flipDestroyingDirectionDown(attackPoint)
             RIGHT -> nextPointToAttack = flipDestroyingDirectionLeft(attackPoint)
             LEFT -> nextPointToAttack = flipDestroyingDirectionRight(attackPoint)
-            else -> nextPointToAttack = flipDestroyingDirectionUp(attackPoint)
+            DOWN -> nextPointToAttack = flipDestroyingDirectionUp(attackPoint)
         }
     }
 
@@ -148,10 +164,24 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
     }
 
     private fun isAvailableForAttack(point: Point): Boolean {
+        return !isOutOfBounds(point) && cellState(point) == NOT_ATTACKED
+    }
+
+    private fun isOutOfBounds(point: Point): Boolean {
         try {
-            return table[point.x][point.y] == NOT_ATTACKED
-        } catch(e: ArrayIndexOutOfBoundsException) {
+            cellState(point)
             return false
+        } catch(e: ArrayIndexOutOfBoundsException) {
+            return true
+        }
+    }
+
+    private fun flipDestroyingDirection45Degrees() {
+        when(destructionDirection) {
+            UP    -> destructionDirection = RIGHT
+            RIGHT -> destructionDirection = DOWN
+            LEFT  -> destructionDirection = UP
+            DOWN  -> destructionDirection = LEFT
         }
     }
 
@@ -160,6 +190,10 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
         var pointToAttack = attackPoint.up()
         while (!isAvailableForAttack(pointToAttack)) {
             pointToAttack = pointToAttack.up()
+            if(isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
+                flipDestroyingDirection45Degrees()
+                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
+            }
         }
         return pointToAttack
     }
@@ -169,6 +203,10 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
         var pointToAttack = attackPoint.right()
         while (!isAvailableForAttack(pointToAttack)) {
             pointToAttack = pointToAttack.right()
+            if (isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
+                flipDestroyingDirection45Degrees()
+                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
+            }
         }
         return pointToAttack
     }
@@ -178,6 +216,10 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
         var pointToAttack = attackPoint.left()
         while (!isAvailableForAttack(pointToAttack)) {
             pointToAttack = pointToAttack.left()
+            if (isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
+                flipDestroyingDirection45Degrees()
+                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
+            }
         }
         return pointToAttack
     }
@@ -187,6 +229,10 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
         var pointToAttack = attackPoint.down()
         while (!isAvailableForAttack(pointToAttack)) {
             pointToAttack = pointToAttack.down()
+            if (isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
+                flipDestroyingDirection45Degrees()
+                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
+            }
         }
         return pointToAttack
     }
