@@ -1,10 +1,7 @@
-package net.artcoder.armada
-
-import java.util.*
+package net.artcoder.armada.core
 
 data class PlacedShip(val points: List<Point>) {
 
-    val id: UUID = UUID.randomUUID()
     private var hits = 0
 
     fun hit(point: Point): Boolean {

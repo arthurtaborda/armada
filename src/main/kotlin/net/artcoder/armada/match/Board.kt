@@ -1,4 +1,7 @@
-package net.artcoder.armada
+package net.artcoder.armada.match
+
+import net.artcoder.armada.core.PlacedShip
+import net.artcoder.armada.core.Point
 
 class Board(private val placedShips: List<PlacedShip>) {
 

@@ -1,16 +1,18 @@
-package net.artcoder.armada.ui
+package net.artcoder.armada.setup
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import net.artcoder.armada.Board
-import net.artcoder.armada.SetupBoard
+import net.artcoder.armada.match.Board
+import net.artcoder.armada.core.gui.MouseClickedCellEvent
+import net.artcoder.armada.core.gui.MouseEnteredCellEvent
+import net.artcoder.armada.core.gui.MouseExitedCellEvent
 
 
 class SetupBoardController(private val eventBus: EventBus,
                            private val setupBoard: SetupBoard) {
 
     @Subscribe fun handle(event: MouseEnteredCellEvent) {
-        val placingPoints = setupBoard.nextPlacingPoints(event.point)
+        val placingPoints = setupBoard.placingPointsFrom(event.point)
         if (placingPoints.validPlacement) {
             event.board.validHint(placingPoints.points)
         } else {
@@ -20,7 +22,7 @@ class SetupBoardController(private val eventBus: EventBus,
 
 
     @Subscribe fun handle(event: MouseExitedCellEvent) {
-        event.board.removeHint(setupBoard.nextPlacingPoints(event.point).points)
+        event.board.removeHint(setupBoard.placingPointsFrom(event.point).points)
     }
 
 

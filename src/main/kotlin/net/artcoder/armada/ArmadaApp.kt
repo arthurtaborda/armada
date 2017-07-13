@@ -1,4 +1,4 @@
-package net.artcoder.armada.ui
+package net.artcoder.armada
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
@@ -10,7 +10,16 @@ import javafx.scene.control.ButtonBar
 import javafx.scene.control.ButtonType
 import javafx.scene.image.ImageView
 import javafx.stage.Stage
-import net.artcoder.armada.*
+import net.artcoder.armada.bot.RandomPointGenerator
+import net.artcoder.armada.bot.SmartBot
+import net.artcoder.armada.core.BoardGenerator
+import net.artcoder.armada.core.gui.BoardView
+import net.artcoder.armada.match.*
+import net.artcoder.armada.match.gui.MatchView
+import net.artcoder.armada.setup.GameStartedEvent
+import net.artcoder.armada.setup.SetupBoard
+import net.artcoder.armada.setup.SetupBoardController
+import net.artcoder.armada.setup.gui.SetupBoardView
 
 fun main(args: Array<String>) {
     Application.launch(ArmadaApp::class.java, *args)
@@ -21,11 +30,9 @@ class ArmadaApp : Application() {
     private val ships = intArrayOf(2, 2, 3, 3, 4, 5)
 
     private var stage = Stage()
-    private val eventBus = EventBus()
+    private var eventBus = EventBus()
 
     override fun start(stage: Stage) {
-        eventBus.register(this)
-
         this.stage = stage
 
         newGame()
@@ -37,8 +44,16 @@ class ArmadaApp : Application() {
         val botBoard = BoardGenerator(ships, pointGenerator).randomBoard()
         val bot = SmartBot(pointGenerator)
         val match = SinglePlayMatch(eventBus, event.board, botBoard, bot)
+        val playerBoardView = BoardView("player", eventBus)
+        val opponentBoardView = BoardView("opponent", eventBus)
+        val controller = MatchController(match, "opponent")
+        val matchView = MatchView(playerBoardView, opponentBoardView)
+
         eventBus.register(match)
-        stage.scene = Scene(MatchView(eventBus, match))
+        eventBus.register(controller)
+        eventBus.register(matchView)
+
+        stage.scene = Scene(matchView)
         stage.show()
     }
 
@@ -53,8 +68,18 @@ class ArmadaApp : Application() {
     }
 
     private fun newGame() {
+        eventBus = EventBus()
+        eventBus.register(this)
+
         val setupBoard = SetupBoard(ships)
-        stage.scene = Scene(SetupBoardView(eventBus, setupBoard))
+        val boardView = BoardView(eventBus)
+        val controller = SetupBoardController(eventBus, setupBoard)
+        val setupBoardView = SetupBoardView(boardView, controller)
+
+        eventBus.register(controller)
+        eventBus.register(setupBoardView)
+
+        stage.scene = Scene(setupBoardView)
         stage.show()
     }
 

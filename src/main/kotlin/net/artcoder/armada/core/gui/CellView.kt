@@ -1,4 +1,4 @@
-package net.artcoder.armada.ui
+package net.artcoder.armada.core.gui
 
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle

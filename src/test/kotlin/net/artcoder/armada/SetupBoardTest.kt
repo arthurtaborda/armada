@@ -1,6 +1,9 @@
 package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.setup.PlacingPoints
+import net.artcoder.armada.setup.SetupBoard
 import org.junit.Before
 import org.junit.Test
 
@@ -15,23 +18,29 @@ class SetupBoardTest {
 
     @Test
     fun givenNewBoard_returnPointsFromSmallerShip() {
-        assertThat(board.nextPlacingPoints(Point(1, 1))).isEqualTo(PlacingPoints(listOf(Point(1, 1), Point(2, 1)), true))
-        assertThat(board.nextPlacingPoints(Point(3, 4))).isEqualTo(PlacingPoints(listOf(Point(3, 4), Point(4, 4)), true))
+        assertThat(board.placingPointsFrom(Point(1, 1))).isEqualTo(PlacingPoints(listOf(Point(1, 1),
+                                                                                        Point(2,
+                                                                                                                                                1)), true))
+        assertThat(board.placingPointsFrom(Point(3, 4))).isEqualTo(PlacingPoints(listOf(Point(3, 4),
+                                                                                        Point(4,
+                                                                                                                                                4)), true))
     }
 
     @Test
     fun givenPointNextToEndOfBoard_returnPartialPointsWithInvalidPlacement() {
-        assertThat(board.nextPlacingPoints(Point(9, 9))).isEqualTo(PlacingPoints(listOf(Point(9, 9)), false))
-        assertThat(board.nextPlacingPoints(Point(9, 6))).isEqualTo(PlacingPoints(listOf(Point(9, 6)), false))
+        assertThat(board.placingPointsFrom(Point(9, 9))).isEqualTo(PlacingPoints(listOf(
+                Point(9, 9)), false))
+        assertThat(board.placingPointsFrom(Point(9, 6))).isEqualTo(PlacingPoints(listOf(
+                Point(9, 6)), false))
     }
 
     @Test
     fun givenPointNextToAnotherShip_returnAllPossiblePointsAndInvalidPlacement() {
         board.place(Point(1, 1))
 
-        assertThat(board.nextPlacingPoints(Point(1, 1)))
+        assertThat(board.placingPointsFrom(Point(1, 1)))
                 .isEqualTo(PlacingPoints(listOf(Point(1, 1), Point(2, 1)), false))
-        assertThat(board.nextPlacingPoints(Point(0, 1)))
+        assertThat(board.placingPointsFrom(Point(0, 1)))
                 .isEqualTo(PlacingPoints(listOf(Point(0, 1), Point(1, 1)), false))
     }
 
@@ -39,8 +48,12 @@ class SetupBoardTest {
     fun whenRotateShip_nextPointsShouldBeInVertical() {
         board.rotate()
 
-        assertThat(board.nextPlacingPoints(Point(1, 1))).isEqualTo(PlacingPoints(listOf(Point(1, 1), Point(1, 2)), true))
-        assertThat(board.nextPlacingPoints(Point(3, 4))).isEqualTo(PlacingPoints(listOf(Point(3, 4), Point(3, 5)), true))
+        assertThat(board.placingPointsFrom(Point(1, 1))).isEqualTo(PlacingPoints(listOf(Point(1, 1),
+                                                                                        Point(1,
+                                                                                                                                                2)), true))
+        assertThat(board.placingPointsFrom(Point(3, 4))).isEqualTo(PlacingPoints(listOf(Point(3, 4),
+                                                                                        Point(3,
+                                                                                                                                                5)), true))
     }
 
     @Test
@@ -68,7 +81,8 @@ class SetupBoardTest {
 
         assertThat(ship1).containsAllIn(listOf(Point(1, 1), Point(2, 1)))
         assertThat(ship2).containsAllIn(listOf(Point(2, 2), Point(3, 2)))
-        assertThat(ship3).containsAllIn(listOf(Point(3, 3), Point(4, 3), Point(5, 3)))
+        assertThat(ship3).containsAllIn(listOf(Point(3, 3), Point(4, 3),
+                                               Point(5, 3)))
     }
 
     @Test
@@ -80,7 +94,7 @@ class SetupBoardTest {
         assertThat(ship1).isEmpty()
         assertThat(ship2).isEmpty()
         assertThat(ship3).isEmpty()
-        assertThat(board.nextPlacingPoints(Point(1, 1)).points.size).isEqualTo(2) // assert that didn't place in the end
+        assertThat(board.placingPointsFrom(Point(1, 1)).points.size).isEqualTo(2) // assert that didn't place in the end
     }
 
     @Test
@@ -92,8 +106,8 @@ class SetupBoardTest {
         board.place(Point(5, 5))
         board.place(Point(2, 9))
 
-        assertThat(board.nextPlacingPoints(Point(1, 1)).points).isEmpty()
-        assertThat(board.nextPlacingPoints(Point(1, 1)).validPlacement).isFalse()
+        assertThat(board.placingPointsFrom(Point(1, 1)).points).isEmpty()
+        assertThat(board.placingPointsFrom(Point(1, 1)).validPlacement).isFalse()
     }
 
     @Test

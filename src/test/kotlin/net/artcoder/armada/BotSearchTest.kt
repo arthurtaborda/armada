@@ -1,7 +1,8 @@
 package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
-import net.artcoder.armada.AttackResult.*
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.match.AttackResult.*
 import org.junit.Test
 
 class BotSearchTest {

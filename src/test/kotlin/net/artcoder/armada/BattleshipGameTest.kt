@@ -1,6 +1,8 @@
 package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.match.*
 import org.junit.Before
 import org.junit.Test
 
@@ -62,7 +64,8 @@ class BattleshipGameTest {
         game.attack(Point(1, 8)) //player one hits
 
         assertThat(eventBus.postCount(PlayerSunkEvent::class)).isEqualTo(1)
-        assertThat(eventBus.contains(PlayerSunkEvent(Point(1, 8), listOf(Point (0, 8), Point(1, 8))))).isTrue()
+        assertThat(eventBus.contains(PlayerSunkEvent(Point(1, 8), listOf(Point(0, 8),
+                                                                         Point(1, 8))))).isTrue()
     }
 
     @Test
@@ -73,7 +76,8 @@ class BattleshipGameTest {
         game.attack(Point(1, 0)) //player two hits
 
         assertThat(eventBus.postCount(OpponentSunkEvent::class)).isEqualTo(1)
-        assertThat(eventBus.contains(OpponentSunkEvent(Point(1, 0), listOf(Point(0, 0), Point(1, 0))))).isTrue()
+        assertThat(eventBus.contains(OpponentSunkEvent(Point(1, 0), listOf(Point(0, 0),
+                                                                           Point(1, 0))))).isTrue()
     }
 
     @Test
@@ -88,7 +92,8 @@ class BattleshipGameTest {
 
         assertThat(eventBus.postCount(OpponentWonEvent::class)).isEqualTo(1)
         assertThat(eventBus.postCount(OpponentSunkEvent::class)).isEqualTo(2)
-        assertThat(eventBus.contains(OpponentSunkEvent(Point(1, 0), listOf(Point(0, 0), Point(1, 0))))).isTrue()
+        assertThat(eventBus.contains(OpponentSunkEvent(Point(1, 0), listOf(Point(0, 0),
+                                                                           Point(1, 0))))).isTrue()
         assertThat(eventBus.contains(OpponentSunkEvent(Point(2, 1), listOf(Point(0, 1),
                                                                            Point(1, 1),
                                                                            Point(2, 1))))).isTrue()
@@ -105,10 +110,11 @@ class BattleshipGameTest {
 
         assertThat(eventBus.postCount(PlayerWonEvent::class)).isEqualTo(1)
         assertThat(eventBus.postCount(PlayerSunkEvent::class)).isEqualTo(2)
-        assertThat(eventBus.contains(PlayerSunkEvent(Point(1, 8), listOf(Point(0, 8), Point(1, 8))))).isTrue()
+        assertThat(eventBus.contains(PlayerSunkEvent(Point(1, 8), listOf(Point(0, 8),
+                                                                         Point(1, 8))))).isTrue()
         assertThat(eventBus.contains(PlayerSunkEvent(Point(2, 9), listOf(Point(0, 9),
-                                                                           Point(1, 9),
-                                                                           Point(2, 9))))).isTrue()
+                                                                         Point(1, 9),
+                                                                         Point(2, 9))))).isTrue()
     }
 
     private fun game(): BattleshipGame {

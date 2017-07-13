@@ -1,5 +1,6 @@
-package net.artcoder.armada
+package net.artcoder.armada.bot
 
+import net.artcoder.armada.core.Point
 import java.util.concurrent.ThreadLocalRandom
 
 class RandomPointGenerator : PointGenerator {

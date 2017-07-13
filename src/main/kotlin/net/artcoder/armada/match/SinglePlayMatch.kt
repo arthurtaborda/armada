@@ -1,7 +1,9 @@
-package net.artcoder.armada
+package net.artcoder.armada.match
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import net.artcoder.armada.bot.Bot
+import net.artcoder.armada.core.Point
 import java.util.concurrent.CompletableFuture.supplyAsync
 import java.util.concurrent.TimeUnit.MILLISECONDS
 

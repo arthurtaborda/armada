@@ -1,6 +1,8 @@
 package net.artcoder.armada
 
 import com.google.common.truth.Truth.assertThat
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.match.*
 import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test
@@ -85,7 +87,8 @@ class SinglePlayMatchTest {
         assertThat(eventBus.postCount(OpponentHitEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(OpponentHitEvent(Point(0, 0)))).isTrue()
         assertThat(eventBus.postCount(OpponentSunkEvent::class)).isEqualTo(1)
-        assertThat(eventBus.contains(OpponentSunkEvent(Point(1, 0), listOf(Point(0, 0), Point(1, 0))))).isTrue()
+        assertThat(eventBus.contains(OpponentSunkEvent(Point(1, 0), listOf(Point(0, 0),
+                                                                           Point(1, 0))))).isTrue()
         assertThat(eventBus.postCount(OpponentMissEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(OpponentMissEvent(Point(5, 7)))).isTrue()
         assertThat(bot.randomCount).isEqualTo(3)

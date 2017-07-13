@@ -1,6 +1,7 @@
-package net.artcoder.armada
+package net.artcoder.armada.match
 
 import com.google.common.eventbus.EventBus
+import net.artcoder.armada.core.Point
 
 class BattleshipGame(private val eventBus: EventBus,
                      private val playerBoard: Board,
@@ -11,8 +12,8 @@ class BattleshipGame(private val eventBus: EventBus,
     fun attack(point: Point) {
         val attackResult = getBoardToAttack().attack(point)
         when (attackResult) {
-            AttackResult.MISS  -> miss(point)
-            AttackResult.HIT -> hit(point)
+            AttackResult.MISS -> miss(point)
+            AttackResult.HIT  -> hit(point)
             AttackResult.SUNK -> sunk(point)
         }
     }

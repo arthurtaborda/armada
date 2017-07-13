@@ -1,16 +1,17 @@
-package net.artcoder.armada.ui
+package net.artcoder.armada.match
 
 import com.google.common.eventbus.Subscribe
-import net.artcoder.armada.OpponentMissEvent
-import net.artcoder.armada.PlayerMissEvent
-import net.artcoder.armada.SinglePlayMatch
+import net.artcoder.armada.core.gui.MouseClickedCellEvent
+import net.artcoder.armada.core.gui.MouseEnteredCellEvent
+import net.artcoder.armada.core.gui.MouseExitedCellEvent
 
-class MatchController(private val match: SinglePlayMatch) {
+class MatchController(private val match: SinglePlayMatch,
+                      private val opponentBoardName: String) {
 
     private var playerTurn = true
 
     @Subscribe fun handle(event: MouseEnteredCellEvent) {
-        if (playerTurn && event.board.name == "opponent") {
+        if (playerTurn && event.board.name == opponentBoardName) {
             if (match.canAttack(event.point)) {
                 event.board.validHint(event.point)
             } else {
@@ -29,13 +30,13 @@ class MatchController(private val match: SinglePlayMatch) {
 
 
     @Subscribe fun handle(event: MouseExitedCellEvent) {
-        if (playerTurn && event.board.name == "opponent") {
+        if (playerTurn && event.board.name == opponentBoardName) {
             event.board.removeHint(event.point)
         }
     }
 
     @Subscribe fun handle(event: MouseClickedCellEvent) {
-        if (playerTurn && event.board.name == "opponent") {
+        if (playerTurn && event.board.name == opponentBoardName) {
             if (match.canAttack(event.point)) {
                 match.attack(event.point)
             }

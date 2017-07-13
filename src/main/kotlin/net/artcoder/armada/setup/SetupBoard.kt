@@ -1,4 +1,8 @@
-package net.artcoder.armada
+package net.artcoder.armada.setup
+
+import net.artcoder.armada.core.PlacedShip
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.match.Board
 
 class SetupBoard(ships: IntArray) {
 
@@ -9,7 +13,6 @@ class SetupBoard(ships: IntArray) {
             return shipsInHold.isEmpty()
         }
 
-
     private val shipsInHold = ships.sorted().toMutableList()
 
     private val nextShipToPlace: Int?
@@ -18,7 +21,7 @@ class SetupBoard(ships: IntArray) {
 
     private val placedShips = mutableListOf<PlacedShip>()
 
-    fun nextPlacingPoints(point: Point): PlacingPoints {
+    fun placingPointsFrom(point: Point): PlacingPoints {
         val points = mutableListOf<Point>()
         nextShipToPlace?.let {
             for (i in 0 until it) {
@@ -37,7 +40,7 @@ class SetupBoard(ships: IntArray) {
                     points.add(Point(point.x, y))
                 }
             }
-            val somePointOverlap = points.any { overlapPlacedBoard(it) }
+            val somePointOverlap = points.any { overlapPlacedShip(it) }
             return PlacingPoints(points, !somePointOverlap)
         }
 
@@ -49,7 +52,7 @@ class SetupBoard(ships: IntArray) {
     }
 
     fun place(point: Point): List<Point> {
-        val placingPoints = nextPlacingPoints(point)
+        val placingPoints = placingPointsFrom(point)
 
         if(!placingPoints.validPlacement) {
             return emptyList()
@@ -79,15 +82,16 @@ class SetupBoard(ships: IntArray) {
             }
         }
 
-        return !overlapPlacedBoard(point)
-    }
-
-    private fun overlapPlacedBoard(point: Point): Boolean {
-        return placedShips.any { it.points.contains(point) }
+        return !overlapPlacedShip(point)
     }
 
     fun finish(): Board {
         return Board(placedShips)
     }
+
+    private fun overlapPlacedShip(point: Point): Boolean {
+        return placedShips.any { it.points.contains(point) }
+    }
 }
 
+data class PlacingPoints(val points: List<Point>, val validPlacement: Boolean)

@@ -1,22 +1,15 @@
-package net.artcoder.armada.ui
+package net.artcoder.armada.match.gui
 
-import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
-import net.artcoder.armada.*
+import net.artcoder.armada.core.gui.BoardView
+import net.artcoder.armada.match.*
 
-class MatchView(eventBus: EventBus, match: SinglePlayMatch) : VBox() {
-
-    private val controller = MatchController(match)
-
-    private val playerBoardView = BoardView("player", eventBus)
-    private val opponentBoardView = BoardView("opponent", eventBus)
+class MatchView(private val playerBoardView: BoardView,
+                private val opponentBoardView: BoardView) : VBox() {
 
     init {
-        eventBus.register(controller)
-        eventBus.register(this)
-
         children.add(Label("You"))
         children.add(playerBoardView)
         children.add(Label("Opponent"))

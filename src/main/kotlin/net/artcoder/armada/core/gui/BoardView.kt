@@ -1,9 +1,9 @@
-package net.artcoder.armada.ui
+package net.artcoder.armada.core.gui
 
 import com.google.common.eventbus.EventBus
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
-import net.artcoder.armada.Point
+import net.artcoder.armada.core.Point
 
 class BoardView(val name: String, eventBus: EventBus) : VBox() {
 

@@ -1,5 +1,10 @@
 package net.artcoder.armada
 
+import net.artcoder.armada.bot.Bot
+import net.artcoder.armada.bot.PointGenerator
+import net.artcoder.armada.bot.SmartBot
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.match.AttackResult
 import java.util.*
 
 class BotMock : Bot {

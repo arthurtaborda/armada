@@ -1,5 +1,9 @@
 package net.artcoder.armada
 
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.match.Board
+import net.artcoder.armada.setup.SetupBoard
+
 object BoardObjectMother {
 
     fun opponentBoard(): Board {

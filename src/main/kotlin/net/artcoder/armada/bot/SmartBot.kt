@@ -1,8 +1,10 @@
-package net.artcoder.armada
+package net.artcoder.armada.bot
 
-import net.artcoder.armada.SmartBot.CellState.*
-import net.artcoder.armada.SmartBot.DestructionDirection.*
-import net.artcoder.armada.SmartBot.State.*
+import net.artcoder.armada.bot.SmartBot.CellState.*
+import net.artcoder.armada.bot.SmartBot.DestructionDirection.*
+import net.artcoder.armada.bot.SmartBot.State.*
+import net.artcoder.armada.core.Point
+import net.artcoder.armada.match.AttackResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

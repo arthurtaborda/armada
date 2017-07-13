@@ -1,5 +1,8 @@
-package net.artcoder.armada
+package net.artcoder.armada.core
 
+import net.artcoder.armada.bot.PointGenerator
+import net.artcoder.armada.match.Board
+import net.artcoder.armada.setup.SetupBoard
 import java.util.concurrent.ThreadLocalRandom
 
 class BoardGenerator(private val ships: IntArray,
