@@ -2,13 +2,17 @@ package net.artcoder.armada.ui
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import net.artcoder.armada.BattleshipMatch
+import net.artcoder.armada.OpponentMissEvent
+import net.artcoder.armada.PlayerMissEvent
+import net.artcoder.armada.SinglePlayMatch
 
 class MatchController(private val eventBus: EventBus,
-                      private val match: BattleshipMatch) {
+                      private val match: SinglePlayMatch) {
+
+    private var playerTurn = true
 
     @Subscribe fun handle(event: MouseEnteredCellEvent) {
-        if (event.board.name == "opponent") {
+        if (playerTurn && event.board.name == "opponent") {
             if (match.canAttack(event.point)) {
                 event.board.validHint(event.point)
             } else {
@@ -17,15 +21,23 @@ class MatchController(private val eventBus: EventBus,
         }
     }
 
+    @Subscribe fun handle(event: PlayerMissEvent) {
+        playerTurn = false
+    }
+
+    @Subscribe fun handle(event: OpponentMissEvent) {
+        playerTurn = true
+    }
+
 
     @Subscribe fun handle(event: MouseExitedCellEvent) {
-        if (event.board.name == "opponent") {
+        if (playerTurn && event.board.name == "opponent") {
             event.board.removeHint(event.point)
         }
     }
 
     @Subscribe fun handle(event: MouseClickedCellEvent) {
-        if (event.board.name == "opponent") {
+        if (playerTurn && event.board.name == "opponent") {
             if (match.canAttack(event.point)) {
                 match.attack(event.point)
             }

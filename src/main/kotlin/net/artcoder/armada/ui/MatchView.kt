@@ -6,7 +6,7 @@ import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 import net.artcoder.armada.*
 
-class MatchView(eventBus: EventBus, match: BattleshipMatch) : VBox() {
+class MatchView(eventBus: EventBus, match: SinglePlayMatch) : VBox() {
 
     private val controller = MatchController(eventBus, match)
 

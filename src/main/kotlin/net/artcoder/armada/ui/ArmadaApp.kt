@@ -30,8 +30,10 @@ class ArmadaApp : Application() {
 
     @Subscribe
     fun handle(event: GameStartedEvent) {
-        val boardGenerator = BoardGenerator(ships, RandomPointGenerator())
-        val match = BattleshipMatch(eventBus, event.board, boardGenerator.randomBoard())
+        val pointGenerator = RandomPointGenerator()
+        val botBoard = BoardGenerator(ships, pointGenerator).randomBoard()
+        val bot = SmartBot(pointGenerator)
+        val match = SinglePlayMatch(eventBus, event.board, botBoard, bot)
         stage?.scene = Scene(MatchView(eventBus, match))
         stage?.show()
     }

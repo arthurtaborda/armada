@@ -4,7 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 
-class MatchTest {
+class BattleshipGameTest {
 
     private var eventBus = EventBusSpy()
 
@@ -16,8 +16,8 @@ class MatchTest {
     @Test
     fun whenPlayerAttackPointWithNoShip_dispatchPlayerMissEvent() {
         val point = Point(0, 3)
-        val match = match()
-        match.attack(point)
+        val game = game()
+        game.attack(point)
 
         assertThat(eventBus.postCount(PlayerMissEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(PlayerMissEvent(point))).isTrue()
@@ -26,8 +26,8 @@ class MatchTest {
     @Test
     fun whenPlayerAttackPointWithShip_dispatchPlayerHitEvent() {
         val point = Point(0, 8)
-        val match = match()
-        match.attack(point)
+        val game = game()
+        game.attack(point)
 
         assertThat(eventBus.postCount(PlayerHitEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(PlayerHitEvent(point))).isTrue()
@@ -35,10 +35,10 @@ class MatchTest {
 
     @Test
     fun whenPlayerOneMissesAndOpponentMisses_dispatchOpponentMissEvent() {
-        val match = match()
-        match.attack(Point(0, 3)) //player one misses
+        val game = game()
+        game.attack(Point(0, 3)) //player one misses
         val point = Point(4, 4)
-        match.attack(point) //player two misses
+        game.attack(point) //player two misses
 
         assertThat(eventBus.postCount(OpponentMissEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(OpponentMissEvent(point))).isTrue()
@@ -46,10 +46,10 @@ class MatchTest {
 
     @Test
     fun whenPlayerOneMissesAndOpponentHits_dispatchOpponentHitEvent() {
-        val match = match()
-        match.attack(Point(0, 3)) //player one misses
+        val game = game()
+        game.attack(Point(0, 3)) //player one misses
         val point = Point(1, 1)
-        match.attack(point) //player two hits
+        game.attack(point) //player two hits
 
         assertThat(eventBus.postCount(OpponentHitEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(OpponentHitEvent(point))).isTrue()
@@ -57,9 +57,9 @@ class MatchTest {
 
     @Test
     fun whenPlayerSinks_dispatchPlayerSunkEvent() {
-        val match = match()
-        match.attack(Point(0, 8)) //player one hits
-        match.attack(Point(1, 8)) //player one hits
+        val game = game()
+        game.attack(Point(0, 8)) //player one hits
+        game.attack(Point(1, 8)) //player one hits
 
         assertThat(eventBus.postCount(PlayerSunkEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(PlayerSunkEvent(listOf(Point (0, 8), Point(1, 8))))).isTrue()
@@ -67,10 +67,10 @@ class MatchTest {
 
     @Test
     fun whenOpponentSinks_dispatchOpponentSunkEvent() {
-        val match = match()
-        match.attack(Point(0, 3)) //player one misses
-        match.attack(Point(0, 0)) //player two hits
-        match.attack(Point(1, 0)) //player two hits
+        val game = game()
+        game.attack(Point(0, 3)) //player one misses
+        game.attack(Point(0, 0)) //player two hits
+        game.attack(Point(1, 0)) //player two hits
 
         assertThat(eventBus.postCount(OpponentSunkEvent::class)).isEqualTo(1)
         assertThat(eventBus.contains(OpponentSunkEvent(listOf(Point(0, 0), Point(1, 0))))).isTrue()
@@ -78,38 +78,20 @@ class MatchTest {
 
     @Test
     fun cannotAttackAlreadyAttackedPoint() {
-        val match = match()
-        match.attack(Point(0, 8)) //player one hits
+        val game = game()
+        game.attack(Point(0, 8)) //player one hits
 
-        assertThat(match.canAttack(Point(1, 2))).isTrue()
-        assertThat(match.canAttack(Point(9, 9))).isTrue()
-        assertThat(match.canAttack(Point(4, 7))).isTrue()
-        assertThat(match.canAttack(Point(0, 8))).isFalse()
+        assertThat(game.canAttack(Point(1, 2))).isTrue()
+        assertThat(game.canAttack(Point(9, 9))).isTrue()
+        assertThat(game.canAttack(Point(4, 7))).isTrue()
+        assertThat(game.canAttack(Point(0, 8))).isFalse()
     }
 
-    private fun match(): BattleshipMatch {
-        val playerBoard = playerBoard()
-        val opponentBoard = opponentBoard()
+    private fun game(): BattleshipGame {
+        val playerBoard = BoardObjectMother.playerBoard()
+        val opponentBoard = BoardObjectMother.opponentBoard()
 
-        return BattleshipMatch(eventBus, playerBoard, opponentBoard)
-    }
-
-    private fun opponentBoard(): Board {
-        // points: (0,8),(1,8),(0,9),(1,9),(2,9)
-        val setupBoard = SetupBoard(intArrayOf(2, 3))
-        setupBoard.place(Point(0, 8))
-        setupBoard.place(Point(0, 9))
-
-        return setupBoard.finish()
-    }
-
-    private fun playerBoard(): Board {
-        // points: (0,0),(1,0),(0,1),(1,1),(2,1)
-        val setupBoard = SetupBoard(intArrayOf(2, 3))
-        setupBoard.place(Point(0, 0))
-        setupBoard.place(Point(0, 1))
-
-        return setupBoard.finish()
+        return BattleshipGame(eventBus, playerBoard, opponentBoard)
     }
 }
 

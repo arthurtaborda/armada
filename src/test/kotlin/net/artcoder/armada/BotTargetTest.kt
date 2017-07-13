@@ -4,7 +4,9 @@ import com.google.common.truth.Truth.assertThat
 import net.artcoder.armada.AttackResult.*
 import org.junit.Test
 
-class BotTargetTest : BotTestCase() {
+class BotTargetTest {
+
+    private fun bot() = BotMock()
 
     /*
     when attack hits
@@ -12,14 +14,14 @@ class BotTargetTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsRight() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.right())
     }
 
@@ -29,14 +31,14 @@ class BotTargetTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsOnRightEdge() {
-        val pointGenerator = pointGenerator(listOf(Point (9, 3)))
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(9, 3))
 
         val point = bot.nextPoint()
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.down())
     }
 
@@ -46,15 +48,15 @@ class BotTargetTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsDown() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.down())
     }
 
@@ -64,15 +66,15 @@ class BotTargetTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsOnBottomEdge() {
-        val pointGenerator = pointGenerator(listOf(Point(3, 9)))
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 9))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.left())
     }
 
@@ -82,8 +84,8 @@ class BotTargetTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsLeft() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
@@ -91,7 +93,7 @@ class BotTargetTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.left())
     }
 
@@ -101,8 +103,8 @@ class BotTargetTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsOnLeftEdge() {
-        val pointGenerator = pointGenerator(listOf(Point(0, 3)))
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(0, 3))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
@@ -110,7 +112,7 @@ class BotTargetTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.up())
     }
 
@@ -120,8 +122,8 @@ class BotTargetTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsUp() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.left(), MISS)
@@ -130,7 +132,7 @@ class BotTargetTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.up())
     }
 }

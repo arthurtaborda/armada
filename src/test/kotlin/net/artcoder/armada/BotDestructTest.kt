@@ -4,7 +4,10 @@ import com.google.common.truth.Truth.assertThat
 import net.artcoder.armada.AttackResult.*
 import org.junit.Test
 
-class BotDestructTest : BotTestCase() {
+class BotDestructTest {
+
+    private fun bot() = BotMock()
+
 
     /*
     when attack hits and next attack misses
@@ -12,15 +15,15 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsThenMissesOnce() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point, HIT)
         bot.reportAttack(bot.nextPoint(), MISS)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.down())
     }
 
@@ -30,8 +33,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsThenMissesTwice() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point, HIT)
@@ -39,7 +42,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(bot.nextPoint(), MISS)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.left())
     }
 
@@ -49,8 +52,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsThenMissesThrice() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point, HIT)
@@ -59,7 +62,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(bot.nextPoint(), MISS)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.up())
     }
 
@@ -69,14 +72,14 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsRight() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.right())
     }
 
@@ -86,15 +89,15 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsDown() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.down())
     }
 
@@ -104,8 +107,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsLeft() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.right(), MISS)
@@ -113,7 +116,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.left())
     }
 
@@ -123,8 +126,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testAttackHitsUp() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val point = bot.nextPoint()
         bot.reportAttack(point.left(), MISS)
@@ -133,7 +136,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(point, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(point.up())
     }
 
@@ -143,8 +146,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testContinueRightAttack() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -152,7 +155,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack2.right())
     }
 
@@ -162,8 +165,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testContinueRightAttack2() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -173,7 +176,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack3, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(attack3).isEqualTo(attack2.right())
         assertThat(nextAttack).isEqualTo(attack3.right())
     }
@@ -184,8 +187,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testGoLeftAfterMiss() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -195,7 +198,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack3, MISS)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(attack2).isEqualTo(attack1.right())
         assertThat(attack3).isEqualTo(attack2.right())
         assertThat(nextAttack).isEqualTo(attack1.left())
@@ -207,8 +210,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testGoLeftIfNextCellIsAttacked() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -217,7 +220,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack1.left())
     }
 
@@ -227,8 +230,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testGoLeftIfNextCellIsOutOfBoard() {
-        val pointGenerator = pointGenerator(listOf(Point(8, 9)))
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(8, 9))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1, HIT)
@@ -236,7 +239,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack1.left())
     }
 
@@ -246,8 +249,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testContinueDownAttack() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -256,7 +259,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack2.down())
     }
 
@@ -266,8 +269,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testGoUpAfterMiss() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -278,7 +281,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack3, MISS)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -288,8 +291,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testGoUpIfNextCellIsAttacked() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -299,7 +302,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -309,8 +312,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testGoUpIfNextCellIsOutOfBoard() {
-        val pointGenerator = pointGenerator(listOf(Point(8, 8)))
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(8, 8))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -319,7 +322,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack1.up())
     }
 
@@ -329,8 +332,8 @@ class BotDestructTest : BotTestCase() {
      */
     @Test
     fun testContinueLeftAttack() {
-        val pointGenerator = pointGenerator()
-        val bot = bot(pointGenerator)
+        val bot = bot()
+        bot.putRandomPoint(Point(3, 2))
 
         val attack1 = bot.nextPoint()
         bot.reportAttack(attack1.right(), MISS)
@@ -340,7 +343,7 @@ class BotDestructTest : BotTestCase() {
         bot.reportAttack(attack2, HIT)
 
         val nextAttack = bot.nextPoint()
-        pointGenerator.verifyCount(1)
+        assertThat(bot.randomCount).isEqualTo(1)
         assertThat(nextAttack).isEqualTo(attack2.left())
     }
 }

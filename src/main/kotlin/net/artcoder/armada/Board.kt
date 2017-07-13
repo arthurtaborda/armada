@@ -4,7 +4,7 @@ class Board(private val placedShips: List<PlacedShip>) {
 
     private val attackedPoints = mutableListOf<Point>()
 
-    fun  attack(point: Point): AttackResult {
+    fun attack(point: Point): AttackResult {
         attackedPoints.add(point)
         val isHit = placedShips.any { it.points.contains(point) }
         if(isHit) {

@@ -2,9 +2,9 @@ package net.artcoder.armada
 
 import com.google.common.eventbus.EventBus
 
-class BattleshipMatch(private val eventBus: EventBus,
-                      private val playerBoard: Board,
-                      private val opponentBoard: Board) {
+class BattleshipGame(private val eventBus: EventBus,
+                     private val playerBoard: Board,
+                     private val opponentBoard: Board) {
 
     private var isPlayersTurn = true
 
