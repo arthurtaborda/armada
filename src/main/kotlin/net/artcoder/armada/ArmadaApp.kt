@@ -85,21 +85,23 @@ class ArmadaApp : Application() {
     }
 
     private fun gameOverDialog(text: String, iconPath: String) {
-        val alert = Alert(Alert.AlertType.CONFIRMATION)
-        alert.title = "Game Over"
-        alert.headerText = text
-        alert.graphic = ImageView(javaClass.classLoader.getResource(iconPath).toString())
+        Platform.runLater {
+            val alert = Alert(Alert.AlertType.CONFIRMATION)
+            alert.title = "Game Over"
+            alert.headerText = text
+            alert.graphic = ImageView(javaClass.classLoader.getResource(iconPath).toString())
 
-        val playAgainButtonType = ButtonType("Play again")
-        val quitButtonType = ButtonType("Quit", ButtonBar.ButtonData.CANCEL_CLOSE)
-        alert.buttonTypes.setAll(playAgainButtonType, quitButtonType)
+            val playAgainButtonType = ButtonType("Play again")
+            val quitButtonType = ButtonType("Quit", ButtonBar.ButtonData.CANCEL_CLOSE)
+            alert.buttonTypes.setAll(playAgainButtonType, quitButtonType)
 
-        val result = alert.showAndWait()
+            val result = alert.showAndWait()
 
-        if (result.get() == playAgainButtonType) {
-            newGame()
-        } else if (result.get() == quitButtonType) {
-            Platform.exit()
+            if (result.get() == playAgainButtonType) {
+                newGame()
+            } else if (result.get() == quitButtonType) {
+                Platform.exit()
+            }
         }
     }
 }
