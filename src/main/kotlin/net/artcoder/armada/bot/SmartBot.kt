@@ -11,6 +11,7 @@ import net.artcoder.armada.match.OpponentSunkEvent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
+import java.util.function.Function
 
 open class SmartBot(private val pointGenerator: PointGenerator): Bot {
 
@@ -163,6 +164,38 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
         }
     }
 
+    private fun flipDestroyingDirectionUp(attackPoint: Point): Point {
+        destructionDirection = UP
+        return flip(attackPoint, Function { it.up() })
+    }
+
+    private fun flipDestroyingDirectionRight(attackPoint: Point): Point {
+        destructionDirection = RIGHT
+        return flip(attackPoint, Function { it.right() })
+    }
+
+    private fun flipDestroyingDirectionLeft(attackPoint: Point): Point {
+        destructionDirection = LEFT
+        return flip(attackPoint, Function { it.left() })
+    }
+
+    private fun flipDestroyingDirectionDown(attackPoint: Point): Point {
+        destructionDirection = DOWN
+        return flip(attackPoint, Function { it.down() })
+    }
+
+    private fun flip(attackPoint: Point, directionality: Function<Point, Point>): Point {
+        var pointToAttack = directionality.apply(attackPoint)
+        while (!isAvailableForAttack(pointToAttack)) {
+            pointToAttack = directionality.apply(pointToAttack)
+            if (isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
+                flipDestroyingDirection45Degrees()
+                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
+            }
+        }
+        return pointToAttack
+    }
+
     private fun isAvailableForAttack(point: Point): Boolean {
         return !isOutOfBounds(point) && cellState(point) == NOT_ATTACKED
     }
@@ -183,58 +216,6 @@ open class SmartBot(private val pointGenerator: PointGenerator): Bot {
             LEFT  -> destructionDirection = UP
             DOWN  -> destructionDirection = LEFT
         }
-    }
-
-    private fun flipDestroyingDirectionUp(attackPoint: Point): Point {
-        destructionDirection = UP
-        var pointToAttack = attackPoint.up()
-        while (!isAvailableForAttack(pointToAttack)) {
-            pointToAttack = pointToAttack.up()
-            if(isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
-                flipDestroyingDirection45Degrees()
-                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
-            }
-        }
-        return pointToAttack
-    }
-
-    private fun flipDestroyingDirectionRight(attackPoint: Point): Point {
-        destructionDirection = RIGHT
-        var pointToAttack = attackPoint.right()
-        while (!isAvailableForAttack(pointToAttack)) {
-            pointToAttack = pointToAttack.right()
-            if (isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
-                flipDestroyingDirection45Degrees()
-                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
-            }
-        }
-        return pointToAttack
-    }
-
-    private fun flipDestroyingDirectionLeft(attackPoint: Point): Point {
-        destructionDirection = LEFT
-        var pointToAttack = attackPoint.left()
-        while (!isAvailableForAttack(pointToAttack)) {
-            pointToAttack = pointToAttack.left()
-            if (isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
-                flipDestroyingDirection45Degrees()
-                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
-            }
-        }
-        return pointToAttack
-    }
-
-    private fun flipDestroyingDirectionDown(attackPoint: Point): Point {
-        destructionDirection = DOWN
-        var pointToAttack = attackPoint.down()
-        while (!isAvailableForAttack(pointToAttack)) {
-            pointToAttack = pointToAttack.down()
-            if (isOutOfBounds(pointToAttack) || cellState(pointToAttack) == MISS) {
-                flipDestroyingDirection45Degrees()
-                pointToAttack = getNextPossibleDestructionPoint(hitsNotSunk.first())
-            }
-        }
-        return pointToAttack
     }
 
 }
