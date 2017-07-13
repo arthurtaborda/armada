@@ -340,7 +340,7 @@ class BotDestructTest {
     }
 
     /*
-    when there are two ships together and destruction goes in wrong direction
+    when there are three ships together and destruction goes in wrong direction
     bot detects right direction
 
     ship1: [(0,0),(0,1)], ship2: [(1,0),(1,1)], ship3: [(2,0),(2,1),(2,2)]
