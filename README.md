@@ -7,4 +7,8 @@
 
 Armada is a simple battleship game. It provides a bot to play in single player mode.
 
+To start simply run:
+
+`./gradlew run`
+
 It was created as a way for me to learn kotlin and practice Test Driven Development and Domain Driven Design
