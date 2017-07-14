@@ -2,9 +2,9 @@ package net.artcoder.armada
 
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-import net.artcoder.armada.bot.Bot
-import net.artcoder.armada.bot.PointGenerator
-import net.artcoder.armada.bot.SmartBot
+import net.artcoder.armada.ai.Bot
+import net.artcoder.armada.ai.PointGenerator
+import net.artcoder.armada.ai.SmartBot
 import net.artcoder.armada.core.Point
 import net.artcoder.armada.match.OpponentHitEvent
 import net.artcoder.armada.match.OpponentMissEvent

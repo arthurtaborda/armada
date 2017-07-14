@@ -1,9 +1,9 @@
-package net.artcoder.armada.bot
+package net.artcoder.armada.ai
 
 import com.google.common.eventbus.Subscribe
-import net.artcoder.armada.bot.SmartBot.CellState.*
-import net.artcoder.armada.bot.SmartBot.DestructionDirection.*
-import net.artcoder.armada.bot.SmartBot.State.*
+import net.artcoder.armada.ai.SmartBot.CellState.*
+import net.artcoder.armada.ai.SmartBot.DestructionDirection.*
+import net.artcoder.armada.ai.SmartBot.State.*
 import net.artcoder.armada.core.Point
 import net.artcoder.armada.match.OpponentHitEvent
 import net.artcoder.armada.match.OpponentMissEvent

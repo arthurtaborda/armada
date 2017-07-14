@@ -1,6 +1,5 @@
-package net.artcoder.armada.core
+package net.artcoder.armada.ai
 
-import net.artcoder.armada.bot.PointGenerator
 import net.artcoder.armada.match.Board
 import net.artcoder.armada.setup.SetupBoard
 import java.util.concurrent.ThreadLocalRandom

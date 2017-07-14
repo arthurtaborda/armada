@@ -1,4 +1,4 @@
-package net.artcoder.armada.bot
+package net.artcoder.armada.ai
 
 import net.artcoder.armada.core.Point
 
