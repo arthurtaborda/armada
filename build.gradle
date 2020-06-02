@@ -34,5 +34,5 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.33'
-    testCompile 'org.awaitility:awaitility:3.0.0'
+    testCompile 'org.awaitility:awaitility:4.0.3'
 }
