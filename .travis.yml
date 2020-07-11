@@ -1,12 +1,6 @@
 language: java
 jdk:
-  - oraclejdk8
-
-sudo: false
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+  - openjdk11
 
 branches:
   only:
