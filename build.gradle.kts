@@ -35,7 +35,7 @@ repositories {
 dependencies {
     kotlin("stdlib")
     implementation("org.apache.logging.log4j:log4j-core:2.8.2")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.8.2")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.0")
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 
