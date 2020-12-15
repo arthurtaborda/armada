@@ -39,7 +39,7 @@ dependencies {
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.72")
 
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.1")
     testImplementation("com.google.truth:truth:0.33")
     testImplementation("org.awaitility:awaitility:3.0.0")
 }
