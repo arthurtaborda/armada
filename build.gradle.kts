@@ -41,5 +41,5 @@ dependencies {
 
     testImplementation("junit:junit:4.12")
     testImplementation("com.google.truth:truth:0.33")
-    testImplementation("org.awaitility:awaitility:3.0.0")
+    testImplementation("org.awaitility:awaitility:4.1.0")
 }
